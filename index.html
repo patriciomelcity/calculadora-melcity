@@ -1896,6 +1896,19 @@
     img.src = url;
   }
 
+  // Si la URL de una foto es relativa (sin http), la resuelve contra la carpeta del catálogo.
+  // Así los vendedores solo tienen que poner el nombre del archivo en el Excel (ej: "6130.png")
+  // y las fotos cargan automáticamente desde GitHub.
+  function _resolvePhotoUrl(url) {
+    if (!url) return null;
+    if (/^https?:\/\//i.test(url)) return url;          // ya es URL completa
+    if (CATALOGO_URL) {
+      const base = CATALOGO_URL.substring(0, CATALOGO_URL.lastIndexOf('/') + 1);
+      return base + url;
+    }
+    return url;   // local: se usa como está (funciona si el HTML y la foto están en la misma carpeta)
+  }
+
   // Parsea las filas del Excel y devuelve { products, total, skipped }
   function _parseXlsxRows(rows) {
     const products = {};
@@ -1909,7 +1922,7 @@
         const raw = row[col];
         if (raw !== '' && raw !== undefined && raw !== null) product[col] = raw;
       });
-      const foto = String(row['Foto (URL)'] || '').trim();
+      const foto = _resolvePhotoUrl(String(row['Foto (URL)'] || '').trim());
       if (foto) product['_foto'] = foto;
       if (!products[tipo]) products[tipo] = [];
       products[tipo].push(product);
@@ -2003,7 +2016,7 @@
   // Dejá vacío ('') para usar solo carga manual por archivo Excel.
   // Ejemplo:
   //   'https://raw.githubusercontent.com/USUARIO/REPO/main/catalogo-melcity.xlsx'
-  const CATALOGO_URL = 'https://raw.githubusercontent.com/patriciomelcity/calculadora-melcity/main/catalogo-melcity.xlsx';
+  const CATALOGO_URL = '';
 
   // Agrega espacio al tope de la columna "cur" para que sus campos
   // queden alineados con los primeros campos de la columna "our"
