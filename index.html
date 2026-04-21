@@ -1,0 +1,2702 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Costo en Uso — Melcity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue:   #1845a8;
+      --teal:   #00b4a0;
+      --text:   #111827;
+      --sub:    #6b7280;
+      --light:  #f9fafb;
+      --border: #e5e7eb;
+      --white:  #ffffff;
+      --save:   #059669;
+      --warn:   #d97706;
+      --danger: #dc2626;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--light);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: linear-gradient(135deg, #0d2260 0%, #1845a8 55%, #007a6e 100%);
+      color: white;
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .logo-wrap { height: 46px; display: flex; align-items: center; }
+    .logo-wrap img { height: 46px; width: auto; object-fit: contain; }
+    .logo-wrap .logo-fallback {
+      height: 46px; width: 46px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+    }
+    .header-titles { line-height: 1.25; }
+    .header-titles .company-tagline {
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.82);
+      letter-spacing: 0.01em;
+      margin-bottom: 3px;
+    }
+    .header-titles .app-title {
+      font-family: 'Nunito', sans-serif;
+      font-size: 24px;
+      font-weight: 900;
+      color: white;
+      letter-spacing: -0.3px;
+      line-height: 1.1;
+    }
+    .header-right-wrap { display: flex; align-items: center; gap: 18px; flex-shrink: 0; }
+    .elite-logo-wrap { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .elite-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); }
+    .elite-logo-wrap img { height: 36px; width: auto; object-fit: contain; }
+
+    /* ── VISIT CARD ── */
+    .visit-card {
+      background: linear-gradient(135deg, #eef2ff 0%, #f0fdfa 100%);
+      border-bottom: 1px solid #dde5f4;
+      padding: 18px 40px;
+    }
+    .visit-fields {
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .visit-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .visit-field label {
+      font-size: 10px;
+      font-weight: 700;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+    .visit-field input, .visit-field select {
+      padding: 7px 12px;
+      border: 1px solid #d1d9ee;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 500;
+      background: white;
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .visit-field input:focus, .visit-field select:focus {
+      outline: none;
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(0,180,160,0.13);
+    }
+    .visit-field input { width: 192px; }
+    .visit-field input[type="date"] { width: 150px; }
+    .visit-field select { width: 195px; cursor: pointer; }
+    .visit-divider {
+      width: 1px; height: 38px;
+      background: #cdd5e8;
+      margin: 0 4px;
+      align-self: flex-end;
+    }
+    .fiscal-note {
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+      align-self: flex-end;
+      margin-bottom: 2px;
+    }
+    .fiscal-note--ok {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .fiscal-note--ri {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+
+    /* ── INFO BOX ── */
+
+    /* ── TABS ── */
+    .tabs {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      display: flex;
+      overflow-x: auto;
+    }
+    .tab {
+      padding: 14px 16px;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--sub);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+      user-select: none;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--teal); border-bottom-color: var(--teal); font-weight: 600; }
+
+    /* ── CONTENT ── */
+    .content { max-width: 1000px; margin: 0 auto; padding: 32px 24px; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── INFO BOX ── */
+    .info-box {
+      background: linear-gradient(135deg, #f0fdfa 0%, #eff6ff 100%);
+      border: 1px solid #c7eae7;
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: #374151;
+      line-height: 1.65;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .info-box .ib-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+      background: white;
+      border-radius: 10px;
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 1px 4px rgba(0,180,160,0.15);
+    }
+    .info-box .ib-body strong { color: #0d5c52; font-weight: 700; }
+    .info-box .ib-body { flex: 1; }
+
+    /* ── CALC CARD ── */
+    .calc-card {
+      background: var(--white);
+      border-radius: 14px;
+      margin-bottom: 14px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.04);
+      transition: box-shadow 0.2s;
+    }
+    .calc-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.09), 0 8px 28px rgba(0,0,0,0.06); }
+    .calc-card-header {
+      padding: 13px 20px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .calc-card-header:hover { background: var(--light); }
+    .calc-card-header .icon { font-size: 17px; }
+    .calc-card-header h3 { font-size: 14px; font-weight: 600; flex: 1; color: var(--text); }
+    .toggle-btn {
+      background: none; border: none;
+      font-size: 11px; cursor: pointer;
+      color: var(--sub); padding: 4px 7px;
+      border-radius: 5px;
+      transition: background 0.15s;
+    }
+    .toggle-btn:hover { background: var(--border); }
+    .calc-card-body { padding: 24px; }
+
+    /* ── COMPARISON GRID ── */
+    .comparison { display: grid; grid-template-columns: 1fr 40px 1fr; gap: 20px; align-items: start; }
+
+    .product-col h4 {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--sub);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid;
+    }
+    .product-col.cur h4 { color: #b45309; border-color: #fbbf24; }
+    .product-col.our h4 { color: var(--teal); border-color: var(--teal); }
+
+    .vs-col { display: flex; flex-direction: column; align-items: center; padding-top: 34px; }
+    .vs-badge {
+      width: 30px; height: 30px;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      color: var(--sub);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── FORM FIELDS ── */
+    .field { margin-bottom: 12px; }
+    .field label {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--sub);
+      margin-bottom: 5px;
+      letter-spacing: 0.02em;
+    }
+    .field input, .field select {
+      width: 100%;
+      padding: 9px 11px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13.5px;
+      color: var(--text);
+      background: var(--light);
+      transition: box-shadow 0.15s, background 0.15s;
+    }
+    .field input:focus, .field select:focus {
+      outline: none;
+      background: white;
+      box-shadow: 0 0 0 2px var(--teal);
+    }
+    .field .hint { font-size: 11px; color: var(--sub); margin-top: 4px; line-height: 1.5; }
+    .prefix-wrap { position: relative; }
+    .prefix-wrap input { padding-left: 20px; }
+    .prefix-wrap::before {
+      content: attr(data-prefix);
+      position: absolute;
+      left: 9px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--sub);
+      font-size: 12px;
+      pointer-events: none;
+    }
+
+    /* ── RESULTS ── */
+    .results-wrap {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .results-title {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--sub);
+      margin-bottom: 16px;
+    }
+    .metric-block { margin-bottom: 16px; }
+    .metric-name { font-size: 12px; font-weight: 500; color: var(--sub); margin-bottom: 7px; }
+    .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+    .bar-name {
+      font-size: 11px;
+      width: 72px;
+      flex-shrink: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .bar-name.cur { color: #b45309; }
+    .bar-name.our { color: var(--teal); }
+    .bar-track {
+      flex: 1;
+      height: 6px;
+      background: #f3f4f6;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+      min-width: 2px;
+    }
+    .bar-fill.cur { background: #fbbf24; }
+    .bar-fill.our { background: var(--teal); }
+    .bar-val {
+      font-size: 12px;
+      font-weight: 600;
+      width: 80px;
+      text-align: right;
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .bar-val.cur { color: #b45309; }
+    .bar-val.our { color: var(--teal); }
+
+    /* ── SAVINGS BADGE ── */
+    .savings-row { margin-top: 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 12px;
+      border-radius: 99px;
+      font-size: 12.5px; font-weight: 600;
+    }
+    .badge.save { background: #ecfdf5; color: #059669; }
+    .badge.more { background: #fef2f2; color: #dc2626; }
+    .badge.equal { background: var(--light); color: var(--sub); }
+    .badge-note { font-size: 12px; color: var(--sub); }
+
+    /* ── SUMMARY ── */
+    .summary-header {
+      background: linear-gradient(135deg, #0d2260, #1845a8 55%, #007a6e);
+      color: white;
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin-bottom: 20px;
+    }
+    .summary-header h2 { font-size: 17px; font-weight: 700; }
+    .summary-header p { font-size: 13px; opacity: 0.7; margin-top: 5px; }
+
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .kpi-card {
+      background: white; border-radius: 12px; padding: 18px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    }
+    .kpi-card .klabel { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--sub); }
+    .kpi-card .kvalue { font-size: 28px; font-weight: 700; margin: 6px 0 2px; }
+    .kpi-card .ksub { font-size: 12px; color: var(--sub); }
+
+    .summary-table-wrap {
+      background: white; border-radius: 14px; overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    }
+    .summary-table-wrap table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .summary-table-wrap thead tr { background: var(--light); border-bottom: 1px solid var(--border); }
+    .summary-table-wrap th { padding: 11px 16px; text-align: left; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--sub); }
+    .summary-table-wrap td { padding: 13px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .summary-table-wrap tr:last-child td { border-bottom: none; }
+    .prod-name { font-weight: 600; font-size: 13.5px; }
+    .prod-cat { font-size: 11px; color: var(--sub); margin-top: 2px; }
+    .cost-val { font-weight: 600; }
+    .cost-sub { font-size: 11px; color: var(--sub); }
+
+    .print-btn {
+      background: var(--teal);
+      color: white; border: none;
+      padding: 10px 20px; border-radius: 8px;
+      cursor: pointer; font-size: 13.5px; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: opacity 0.15s;
+    }
+    .print-btn:hover { opacity: 0.85; }
+
+    /* ── EMPTY STATE ── */
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--sub); }
+    .empty-state .es-icon { font-size: 48px; margin-bottom: 14px; }
+    .empty-state p { font-size: 14px; }
+
+    /* ── PRODUCT SELECTOR ── */
+    .ps-wrap {
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .ps-label {
+      font-size: 9.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--teal);
+    }
+    .ps-select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 2px solid var(--teal);
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      background: #f0fdfa;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      transition: box-shadow 0.15s;
+    }
+    .ps-select:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,180,160,0.18);
+    }
+
+    /* ── PRODUCT PHOTO ── */
+    .product-photo-wrap {
+      margin-bottom: 14px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--light);
+      max-height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .product-photo {
+      width: 100%;
+      max-height: 130px;
+      object-fit: contain;
+      display: block;
+      padding: 6px;
+    }
+    .photo-err {
+      padding: 10px;
+      font-size: 11.5px;
+      color: var(--sub);
+      text-align: center;
+      line-height: 1.7;
+      width: 100%;
+    }
+    .photo-err small { font-size: 10px; color: #94a3b8; display: block; margin-top: 4px; }
+    .photo-url-link { font-size: 9.5px; color: #3b82f6; word-break: break-all; display: block; margin: 4px 0; }
+
+    /* ── IMPORT BUTTON ── */
+    .import-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--teal);
+      border: none; color: white;
+      padding: 7px 14px; border-radius: 7px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+      transition: opacity 0.15s;
+    }
+    .import-btn:hover { opacity: 0.85; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 28px; right: 28px;
+      color: white; padding: 12px 18px; border-radius: 10px;
+      font-size: 13.5px; font-weight: 500;
+      z-index: 9999;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.14);
+      display: none; max-width: 340px; line-height: 1.4;
+    }
+    .toast.ok    { background: #111827; }
+    .toast.error { background: #dc2626; }
+    .toast.show  { display: block; animation: slideUp 0.22s ease; }
+    @keyframes slideUp {
+      from { transform: translateY(10px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 680px) {
+      .comparison { grid-template-columns: 1fr; }
+      .vs-col { flex-direction: row; padding: 4px 0; }
+      .header, .visit-card, .tabs { padding-left: 16px; padding-right: 16px; }
+      .content { padding: 16px; }
+    }
+
+    /* ── CATALOG STATUS ── */
+    .gear-status-ok {
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 4px 12px;
+    }
+    .gear-status-empty {
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* ── VENDOR INFO BAR ── */
+    .vendor-info-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 40px 10px;
+      background: linear-gradient(90deg, #eef2ff 0%, #f0fdfa 100%);
+      border-bottom: 1px solid #dde5f4;
+    }
+    .vendor-info-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-right: 4px;
+    }
+    .vchip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px;
+      background: white;
+      border: 1px solid #c7d2fe;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #1e40af;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.12s;
+    }
+    .vchip:hover { background: #eff6ff; }
+
+    /* ── PROPUESTA BUTTON ── */
+    .propuesta-bar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .btn-propuesta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      background: linear-gradient(135deg, #1845a8 0%, #00b4a0 100%);
+      color: white;
+      border: none;
+      border-radius: 11px;
+      font-size: 13.5px;
+      font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      box-shadow: 0 3px 12px rgba(24,69,168,0.28);
+      transition: opacity 0.15s, transform 0.1s, box-shadow 0.15s;
+      letter-spacing: 0.01em;
+    }
+    .btn-propuesta:hover  { opacity: 0.93; transform: translateY(-1px); box-shadow: 0 5px 18px rgba(24,69,168,0.32); }
+    .btn-propuesta:active { transform: translateY(0); }
+
+    /* ── PRINT ── */
+    @media print {
+      .tabs, .import-btn, #xlsxInput, .gear-btn, .gear-panel { display: none !important; }
+      .tab-panel { display: block !important; }
+      .calc-card { break-inside: avoid; page-break-inside: avoid; box-shadow: none; border: 1px solid var(--border); }
+      body { background: white; }
+    }
+  </style>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo-wrap" id="logoWrap">
+      <img id="logoImg" src="logo_transparent.png" alt="Melcity"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="logo-fallback" style="display:none">💧</div>
+    </div>
+    <div class="header-titles">
+      <p class="company-tagline">Distribuidora de Productos de Limpieza e Higiene Profesional</p>
+      <h1 class="app-title">Calculadora de Costo en Uso</h1>
+    </div>
+  </div>
+  <div class="header-right-wrap">
+    <div id="gear-status"></div>
+    <div class="elite-logo-wrap">
+      <span class="elite-label">productos</span>
+      <img id="eliteLogoImg" src="logo_elite.png" alt="Elite"
+           onerror="this.style.display='none'">
+    </div>
+  </div>
+</div>
+<div class="visit-card">
+  <div class="visit-fields">
+    <div class="visit-field">
+      <label>Cliente</label>
+      <input type="text" id="clientName" placeholder="Nombre del cliente o empresa">
+    </div>
+    <div class="visit-field">
+      <label>Vendedor</label>
+      <select id="vendedorSel" onchange="selectVendor(this.value)" style="display:none">
+        <option value="">— Elegir vendedor —</option>
+      </select>
+      <input type="text" id="vendedorText" placeholder="Vendedor / Asesor">
+    </div>
+    <div class="visit-field">
+      <label>Fecha</label>
+      <input type="date" id="fechaVisita">
+    </div>
+    <div class="visit-divider"></div>
+    <div class="visit-field">
+      <label>Condición fiscal</label>
+      <select id="condicionFiscal" onchange="updateCondicion()">
+        <option value="cf" selected>Consumidor Final</option>
+        <option value="ri">Responsable Inscripto</option>
+        <option value="mono">Monotributo</option>
+        <option value="exento">IVA Exento</option>
+      </select>
+    </div>
+    <span id="fiscal-note" class="fiscal-note fiscal-note--ok">Precios finales.</span>
+  </div>
+</div>
+
+<div id="vendorInfoBar" class="vendor-info-bar" style="display:none">
+  <span class="vendor-info-label">Contacto:</span>
+  <span id="vendorChips"></span>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('papeleria', this)">📄 Papelería</div>
+  <div class="tab" onclick="showTab('quimicos', this)">🧴 Químicos</div>
+  <div class="tab" onclick="showTab('accesorios', this)">🧹 Accesorios</div>
+  <div class="tab" onclick="showTab('resumen', this)">📊 Resumen</div>
+</div>
+
+<div class="content">
+
+  <!-- ══════════════ PAPELERÍA ══════════════ -->
+  <div id="tab-papeleria" class="tab-panel active">
+    <div class="propuesta-bar">
+      <button class="btn-propuesta" onclick="generarPropuesta()">🖨 Generar propuesta PDF</button>
+    </div>
+    <div class="info-box">
+      <div class="ib-icon">📄</div>
+      <div class="ib-body"><strong>Costo en uso — Papelería:</strong> Dos productos con el mismo precio pueden tener costos reales muy distintos según la cantidad de metros, hojas o usos. Calculamos el costo <em>por metro</em>, <em>por hoja</em> o <em>por uso</em>, no por paquete.</div>
+    </div>
+
+    <!-- 1. Papel Higiénico -->
+    <div class="calc-card">
+      <div class="calc-card-header" onclick="toggleCard(this)">
+        <span class="icon">🧻</span>
+        <h3>Papel Higiénico Institucional</h3>
+        <button class="toggle-btn">▼</button>
+      </div>
+      <div class="calc-card-body">
+        <div class="comparison">
+          <div class="product-col cur">
+            <h4>Producto Actual</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="ph_cn" placeholder="Ej: Marca actual" oninput="calcPH()"></div>
+            <div class="field"><label>Precio por paquete</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="ph_cp" placeholder="0.00" step="0.01" min="0" oninput="calcPH()"></div></div>
+            <div class="field"><label>Rollos por paquete</label><input type="number" id="ph_cr" placeholder="Ej: 12" min="1" oninput="calcPH()"></div>
+            <div class="field"><label>Metros por rollo</label><input type="number" id="ph_cm" placeholder="Ej: 60" step="0.5" min="1" oninput="calcPH()"></div>
+            <div class="field"><label>Hojas</label>
+              <select id="ph_cl" onchange="calcPH()">
+                <option value="1">1 hoja</option>
+                <option value="2" selected>2 hojas</option>
+                <option value="3">3 hojas</option>
+              </select>
+            </div>
+          </div>
+          <div class="vs-col"><div class="vs-badge">VS</div></div>
+          <div class="product-col our">
+            <h4>Nuestro Producto</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="ph_on" placeholder="Ej: Nuestra marca" oninput="calcPH()"></div>
+            <div class="field"><label>Precio por paquete</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="ph_op" placeholder="0.00" step="0.01" min="0" oninput="calcPH()"></div></div>
+            <div class="field"><label>Rollos por paquete</label><input type="number" id="ph_or" placeholder="Ej: 12" min="1" oninput="calcPH()"></div>
+            <div class="field"><label>Metros por rollo</label><input type="number" id="ph_om" placeholder="Ej: 60" step="0.5" min="1" oninput="calcPH()"></div>
+            <div class="field"><label>Hojas</label>
+              <select id="ph_ol" onchange="calcPH()">
+                <option value="1">1 hoja</option>
+                <option value="2" selected>2 hojas</option>
+                <option value="3">3 hojas</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="results-wrap" id="ph_res" style="display:none">
+          <div class="results-title">Resultado — Costo en uso</div>
+          <div id="ph_bars"></div>
+          <div class="savings-row" id="ph_badge"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Toallas en Rollo -->
+    <div class="calc-card">
+      <div class="calc-card-header" onclick="toggleCard(this)">
+        <span class="icon">🌀</span>
+        <h3>Toallas en Rollo</h3>
+        <button class="toggle-btn">▼</button>
+      </div>
+      <div class="calc-card-body">
+        <div class="comparison">
+          <div class="product-col cur">
+            <h4>Producto Actual</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="tr_cn" placeholder="Ej: Marca actual" oninput="calcTR()"></div>
+            <div class="field"><label>Precio por paquete</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="tr_cp" placeholder="0.00" step="0.01" min="0" oninput="calcTR()"></div></div>
+            <div class="field"><label>Rollos por paquete</label><input type="number" id="tr_cr" placeholder="Ej: 6" min="1" oninput="calcTR()"></div>
+            <div class="field"><label>Metros por rollo</label><input type="number" id="tr_cm" placeholder="Ej: 150" step="1" min="1" oninput="calcTR()"></div>
+            <div class="field"><label>CMs de hoja por secado de manos</label><input type="number" id="tr_cc" placeholder="Ej: 30" step="1" min="1" oninput="calcTR()">
+              <div class="hint">Centímetros de papel utilizados por cada secado.</div>
+            </div>
+          </div>
+          <div class="vs-col"><div class="vs-badge">VS</div></div>
+          <div class="product-col our">
+            <h4>Nuestro Producto</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="tr_on" placeholder="Ej: Nuestra marca" oninput="calcTR()"></div>
+            <div class="field"><label>Precio por paquete</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="tr_op" placeholder="0.00" step="0.01" min="0" oninput="calcTR()"></div></div>
+            <div class="field"><label>Rollos por paquete</label><input type="number" id="tr_or" placeholder="Ej: 6" min="1" oninput="calcTR()"></div>
+            <div class="field"><label>Metros por rollo</label><input type="number" id="tr_om" placeholder="Ej: 150" step="1" min="1" oninput="calcTR()"></div>
+            <div class="field"><label>CMs de hoja por secado de manos</label><input type="number" id="tr_oc" placeholder="Ej: 30" step="1" min="1" oninput="calcTR()"></div>
+          </div>
+        </div>
+        <div class="results-wrap" id="tr_res" style="display:none">
+          <div class="results-title">Resultado — Costo en uso</div>
+          <div id="tr_bars"></div>
+          <div class="savings-row" id="tr_badge"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Toallas Intercaladas -->
+    <div class="calc-card">
+      <div class="calc-card-header" onclick="toggleCard(this)">
+        <span class="icon">🤲</span>
+        <h3>Toallas Intercaladas</h3>
+        <button class="toggle-btn">▼</button>
+      </div>
+      <div class="calc-card-body">
+        <div class="comparison">
+          <div class="product-col cur">
+            <h4>Producto Actual</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="ti_cn" placeholder="Ej: Marca actual" oninput="calcTI()"></div>
+            <div class="field"><label>Precio por caja</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="ti_cp" placeholder="0.00" step="0.01" min="0" oninput="calcTI()"></div></div>
+            <div class="field"><label>Total hojas por caja</label><input type="number" id="ti_cs" placeholder="Ej: 4000" min="1" oninput="calcTI()"></div>
+            <div class="field"><label>Hojas por secado de manos</label><input type="number" id="ti_cu" placeholder="Ej: 2" value="2" min="1" oninput="calcTI()">
+              <div class="hint">Hojas que consume una persona por uso.</div>
+            </div>
+          </div>
+          <div class="vs-col"><div class="vs-badge">VS</div></div>
+          <div class="product-col our">
+            <h4>Nuestro Producto</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="ti_on" placeholder="Ej: Nuestra marca" oninput="calcTI()"></div>
+            <div class="field"><label>Precio por caja</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="ti_op" placeholder="0.00" step="0.01" min="0" oninput="calcTI()"></div></div>
+            <div class="field"><label>Total hojas por caja</label><input type="number" id="ti_os" placeholder="Ej: 4000" min="1" oninput="calcTI()"></div>
+            <div class="field"><label>Hojas por secado de manos</label><input type="number" id="ti_ou" placeholder="Ej: 2" value="2" min="1" oninput="calcTI()"></div>
+          </div>
+        </div>
+        <div class="results-wrap" id="ti_res" style="display:none">
+          <div class="results-title">Resultado — Costo en uso</div>
+          <div id="ti_bars"></div>
+          <div class="savings-row" id="ti_badge"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Bobinas Multiuso -->
+    <div class="calc-card">
+      <div class="calc-card-header" onclick="toggleCard(this)">
+        <span class="icon">📦</span>
+        <h3>Bobinas Multiuso</h3>
+        <button class="toggle-btn">▼</button>
+      </div>
+      <div class="calc-card-body">
+        <div class="comparison">
+          <div class="product-col cur">
+            <h4>Producto Actual</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="bm_cn" placeholder="Ej: Marca actual" oninput="calcBM()"></div>
+            <div class="field"><label>Precio por paquete</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="bm_cp" placeholder="0.00" step="0.01" min="0" oninput="calcBM()"></div></div>
+            <div class="field"><label>Bobinas por paquete</label><input type="number" id="bm_cr" placeholder="Ej: 1" min="1" oninput="calcBM()"></div>
+            <div class="field"><label>Metros por bobina</label><input type="number" id="bm_cm" placeholder="Ej: 200" step="1" min="1" oninput="calcBM()"></div>
+            <div class="field"><label>Hojas</label>
+              <select id="bm_cl" onchange="calcBM()">
+                <option value="1" selected>1 hoja</option>
+                <option value="2">2 hojas</option>
+              </select>
+            </div>
+          </div>
+          <div class="vs-col"><div class="vs-badge">VS</div></div>
+          <div class="product-col our">
+            <h4>Nuestro Producto</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="bm_on" placeholder="Ej: Nuestra marca" oninput="calcBM()"></div>
+            <div class="field"><label>Precio por paquete</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="bm_op" placeholder="0.00" step="0.01" min="0" oninput="calcBM()"></div></div>
+            <div class="field"><label>Bobinas por paquete</label><input type="number" id="bm_or" placeholder="Ej: 1" min="1" oninput="calcBM()"></div>
+            <div class="field"><label>Metros por bobina</label><input type="number" id="bm_om" placeholder="Ej: 200" step="1" min="1" oninput="calcBM()"></div>
+            <div class="field"><label>Hojas</label>
+              <select id="bm_ol" onchange="calcBM()">
+                <option value="1" selected>1 hoja</option>
+                <option value="2">2 hojas</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="results-wrap" id="bm_res" style="display:none">
+          <div class="results-title">Resultado — Costo en uso</div>
+          <div id="bm_bars"></div>
+          <div class="savings-row" id="bm_badge"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Servilletas -->
+    <div class="calc-card">
+      <div class="calc-card-header" onclick="toggleCard(this)">
+        <span class="icon">🍽️</span>
+        <h3>Servilletas</h3>
+        <button class="toggle-btn">▼</button>
+      </div>
+      <div class="calc-card-body">
+        <div class="comparison">
+          <div class="product-col cur">
+            <h4>Producto Actual</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="sn_cn" placeholder="Ej: Marca actual" oninput="calcSN()"></div>
+            <div class="field"><label>Precio por paquete</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="sn_cp" placeholder="0.00" step="0.01" min="0" oninput="calcSN()"></div></div>
+            <div class="field"><label>Unidades por paquete</label><input type="number" id="sn_cu" placeholder="Ej: 500" min="1" oninput="calcSN()"></div>
+            <div class="field"><label>Tamaño (cm)</label><input type="number" id="sn_cs" placeholder="Ej: 24" step="0.5" min="1" oninput="calcSN()">
+              <div class="hint">Lado abierta (en cm). Opcional.</div>
+            </div>
+          </div>
+          <div class="vs-col"><div class="vs-badge">VS</div></div>
+          <div class="product-col our">
+            <h4>Nuestro Producto</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="sn_on" placeholder="Ej: Nuestra marca" oninput="calcSN()"></div>
+            <div class="field"><label>Precio por paquete</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="sn_op" placeholder="0.00" step="0.01" min="0" oninput="calcSN()"></div></div>
+            <div class="field"><label>Unidades por paquete</label><input type="number" id="sn_ou" placeholder="Ej: 500" min="1" oninput="calcSN()"></div>
+            <div class="field"><label>Tamaño (cm)</label><input type="number" id="sn_os" placeholder="Ej: 24" step="0.5" min="1" oninput="calcSN()"></div>
+          </div>
+        </div>
+        <div class="results-wrap" id="sn_res" style="display:none">
+          <div class="results-title">Resultado — Costo en uso</div>
+          <div id="sn_bars"></div>
+          <div class="savings-row" id="sn_badge"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Paños Multiuso -->
+    <div class="calc-card">
+      <div class="calc-card-header" onclick="toggleCard(this)">
+        <span class="icon">🧼</span>
+        <h3>Paños Multiuso</h3>
+        <button class="toggle-btn">▼</button>
+      </div>
+      <div class="calc-card-body">
+        <div class="comparison">
+          <div class="product-col cur">
+            <h4>Producto Actual</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="pm_cn" placeholder="Ej: Marca actual" oninput="calcPM()"></div>
+            <div class="field"><label>Precio por paquete / rollo</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="pm_cp" placeholder="0.00" step="0.01" min="0" oninput="calcPM()"></div></div>
+            <div class="field"><label>Unidades por paquete</label><input type="number" id="pm_cu" placeholder="Ej: 100" min="1" oninput="calcPM()"></div>
+            <div class="field"><label>Usos por paño</label><input type="number" id="pm_uu" placeholder="Ej: 3" value="3" min="1" oninput="calcPM()">
+              <div class="hint">Cuántas veces se puede usar cada paño antes de descartar.</div>
+            </div>
+          </div>
+          <div class="vs-col"><div class="vs-badge">VS</div></div>
+          <div class="product-col our">
+            <h4>Nuestro Producto</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="pm_on" placeholder="Ej: Nuestra marca" oninput="calcPM()"></div>
+            <div class="field"><label>Precio por paquete / rollo</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="pm_op" placeholder="0.00" step="0.01" min="0" oninput="calcPM()"></div></div>
+            <div class="field"><label>Unidades por paquete</label><input type="number" id="pm_ou" placeholder="Ej: 100" min="1" oninput="calcPM()"></div>
+            <div class="field"><label>Usos por paño</label><input type="number" id="pm_ou2" placeholder="Ej: 3" value="3" min="1" oninput="calcPM()"></div>
+          </div>
+        </div>
+        <div class="results-wrap" id="pm_res" style="display:none">
+          <div class="results-title">Resultado — Costo en uso</div>
+          <div id="pm_bars"></div>
+          <div class="savings-row" id="pm_badge"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ QUÍMICOS ══════════════ -->
+  <div id="tab-quimicos" class="tab-panel">
+    <div class="info-box">
+      <div class="ib-icon">🧴</div>
+      <div class="ib-body"><strong>Costo en uso — Químicos:</strong> El precio del envase no sirve sin considerar la <strong>dilución</strong>. Un producto a $10 con dilución 1:30 (rinde 31 litros) puede costar menos por litro listo que uno a $3 sin dilución. Ingresá las partes de agua por cada parte de producto.</div>
+    </div>
+
+    <!-- Desengrasante -->
+    <div class="calc-card">
+      <div class="calc-card-header" onclick="toggleCard(this)">
+        <span class="icon">🧴</span>
+        <h3>Desengrasante / Limpiador Multiuso</h3>
+        <button class="toggle-btn">▼</button>
+      </div>
+      <div class="calc-card-body">
+        <div class="comparison">
+          <div class="product-col cur">
+            <h4>Producto Actual</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="dg_cn" placeholder="Ej: Marca actual" oninput="calcChem('dg')"></div>
+            <div class="field"><label>Precio del envase</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="dg_cp" placeholder="0.00" step="0.01" min="0" oninput="calcChem('dg')"></div></div>
+            <div class="field"><label>Contenido (litros)</label><input type="number" id="dg_cv" placeholder="Ej: 1" step="0.1" min="0" oninput="calcChem('dg')"></div>
+            <div class="field"><label>Partes de agua por 1 de producto</label><input type="number" id="dg_cd" placeholder="Ej: 9" min="0" oninput="calcChem('dg')">
+              <div class="hint">0 = listo para usar. 9 = 1:10 (rinde 10 litros de solución).</div>
+            </div>
+            <div class="field"><label>Rendimiento (m² por litro listo)</label><input type="number" id="dg_cc" placeholder="Ej: 20" min="0" oninput="calcChem('dg')">
+              <div class="hint">Opcional. Superficie limpiable por litro de solución lista.</div>
+            </div>
+          </div>
+          <div class="vs-col"><div class="vs-badge">VS</div></div>
+          <div class="product-col our">
+            <h4>Nuestro Producto</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="dg_on" placeholder="Ej: Nuestra marca" oninput="calcChem('dg')"></div>
+            <div class="field"><label>Precio del envase</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="dg_op" placeholder="0.00" step="0.01" min="0" oninput="calcChem('dg')"></div></div>
+            <div class="field"><label>Contenido (litros)</label><input type="number" id="dg_ov" placeholder="Ej: 1" step="0.1" min="0" oninput="calcChem('dg')"></div>
+            <div class="field"><label>Partes de agua por 1 de producto</label><input type="number" id="dg_od" placeholder="Ej: 9" min="0" oninput="calcChem('dg')"></div>
+            <div class="field"><label>Rendimiento (m² por litro listo)</label><input type="number" id="dg_oc" placeholder="Ej: 20" min="0" oninput="calcChem('dg')"></div>
+          </div>
+        </div>
+        <div class="results-wrap" id="dg_res" style="display:none">
+          <div class="results-title">Resultado — Costo en uso</div>
+          <div id="dg_bars"></div>
+          <div class="savings-row" id="dg_badge"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desinfectante -->
+    <div class="calc-card">
+      <div class="calc-card-header" onclick="toggleCard(this)">
+        <span class="icon">🦠</span>
+        <h3>Desinfectante / Bactericida</h3>
+        <button class="toggle-btn">▼</button>
+      </div>
+      <div class="calc-card-body">
+        <div class="comparison">
+          <div class="product-col cur">
+            <h4>Producto Actual</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="ds_cn" placeholder="Ej: Marca actual" oninput="calcChem('ds')"></div>
+            <div class="field"><label>Precio del envase</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="ds_cp" placeholder="0.00" step="0.01" min="0" oninput="calcChem('ds')"></div></div>
+            <div class="field"><label>Contenido (litros)</label><input type="number" id="ds_cv" placeholder="Ej: 1" step="0.1" min="0" oninput="calcChem('ds')"></div>
+            <div class="field"><label>Partes de agua por 1 de producto</label><input type="number" id="ds_cd" placeholder="Ej: 4" min="0" oninput="calcChem('ds')">
+              <div class="hint">0 = listo para usar.</div>
+            </div>
+            <div class="field"><label>Rendimiento (m² por litro listo)</label><input type="number" id="ds_cc" placeholder="Ej: 15" min="0" oninput="calcChem('ds')"></div>
+          </div>
+          <div class="vs-col"><div class="vs-badge">VS</div></div>
+          <div class="product-col our">
+            <h4>Nuestro Producto</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="ds_on" placeholder="Ej: Nuestra marca" oninput="calcChem('ds')"></div>
+            <div class="field"><label>Precio del envase</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="ds_op" placeholder="0.00" step="0.01" min="0" oninput="calcChem('ds')"></div></div>
+            <div class="field"><label>Contenido (litros)</label><input type="number" id="ds_ov" placeholder="Ej: 1" step="0.1" min="0" oninput="calcChem('ds')"></div>
+            <div class="field"><label>Partes de agua por 1 de producto</label><input type="number" id="ds_od" placeholder="Ej: 4" min="0" oninput="calcChem('ds')"></div>
+            <div class="field"><label>Rendimiento (m² por litro listo)</label><input type="number" id="ds_oc" placeholder="Ej: 15" min="0" oninput="calcChem('ds')"></div>
+          </div>
+        </div>
+        <div class="results-wrap" id="ds_res" style="display:none">
+          <div class="results-title">Resultado — Costo en uso</div>
+          <div id="ds_bars"></div>
+          <div class="savings-row" id="ds_badge"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detergente -->
+    <div class="calc-card">
+      <div class="calc-card-header" onclick="toggleCard(this)">
+        <span class="icon">🫧</span>
+        <h3>Detergente Lavavajillas / Industrial</h3>
+        <button class="toggle-btn">▼</button>
+      </div>
+      <div class="calc-card-body">
+        <div class="comparison">
+          <div class="product-col cur">
+            <h4>Producto Actual</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="dt_cn" placeholder="Ej: Marca actual" oninput="calcDT()"></div>
+            <div class="field"><label>Precio del envase</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="dt_cp" placeholder="0.00" step="0.01" min="0" oninput="calcDT()"></div></div>
+            <div class="field"><label>Contenido (litros)</label><input type="number" id="dt_cv" placeholder="Ej: 5" step="0.1" min="0" oninput="calcDT()"></div>
+            <div class="field"><label>Dosis por lavado (ml)</label><input type="number" id="dt_cd" placeholder="Ej: 25" min="1" oninput="calcDT()">
+              <div class="hint">Mililitros de producto por lavada o por pileta.</div>
+            </div>
+          </div>
+          <div class="vs-col"><div class="vs-badge">VS</div></div>
+          <div class="product-col our">
+            <h4>Nuestro Producto</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="dt_on" placeholder="Ej: Nuestra marca" oninput="calcDT()"></div>
+            <div class="field"><label>Precio del envase</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="dt_op" placeholder="0.00" step="0.01" min="0" oninput="calcDT()"></div></div>
+            <div class="field"><label>Contenido (litros)</label><input type="number" id="dt_ov" placeholder="Ej: 5" step="0.1" min="0" oninput="calcDT()"></div>
+            <div class="field"><label>Dosis por lavado (ml)</label><input type="number" id="dt_od" placeholder="Ej: 25" min="1" oninput="calcDT()"></div>
+          </div>
+        </div>
+        <div class="results-wrap" id="dt_res" style="display:none">
+          <div class="results-title">Resultado — Costo en uso</div>
+          <div id="dt_bars"></div>
+          <div class="savings-row" id="dt_badge"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jabón de manos -->
+    <div class="calc-card">
+      <div class="calc-card-header" onclick="toggleCard(this)">
+        <span class="icon">🧼</span>
+        <h3>Jabón Líquido de Manos</h3>
+        <button class="toggle-btn">▼</button>
+      </div>
+      <div class="calc-card-body">
+        <div class="comparison">
+          <div class="product-col cur">
+            <h4>Producto Actual</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="jb_cn" placeholder="Ej: Marca actual" oninput="calcJB()"></div>
+            <div class="field"><label>Precio del envase / bidón</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="jb_cp" placeholder="0.00" step="0.01" min="0" oninput="calcJB()"></div></div>
+            <div class="field"><label>Contenido (litros)</label><input type="number" id="jb_cv" placeholder="Ej: 5" step="0.1" min="0" oninput="calcJB()"></div>
+            <div class="field"><label>Dosis por uso (ml)</label><input type="number" id="jb_cd" placeholder="Ej: 2" step="0.5" min="0.1" oninput="calcJB()">
+              <div class="hint">Aprox. 1–3 ml por aplicación según el dispenser.</div>
+            </div>
+          </div>
+          <div class="vs-col"><div class="vs-badge">VS</div></div>
+          <div class="product-col our">
+            <h4>Nuestro Producto</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="jb_on" placeholder="Ej: Nuestra marca" oninput="calcJB()"></div>
+            <div class="field"><label>Precio del envase / bidón</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="jb_op" placeholder="0.00" step="0.01" min="0" oninput="calcJB()"></div></div>
+            <div class="field"><label>Contenido (litros)</label><input type="number" id="jb_ov" placeholder="Ej: 5" step="0.1" min="0" oninput="calcJB()"></div>
+            <div class="field"><label>Dosis por uso (ml)</label><input type="number" id="jb_od" placeholder="Ej: 2" step="0.5" min="0.1" oninput="calcJB()"></div>
+          </div>
+        </div>
+        <div class="results-wrap" id="jb_res" style="display:none">
+          <div class="results-title">Resultado — Costo en uso</div>
+          <div id="jb_bars"></div>
+          <div class="savings-row" id="jb_badge"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ ACCESORIOS ══════════════ -->
+  <div id="tab-accesorios" class="tab-panel">
+    <div class="info-box">
+      <div class="ib-icon">🧹</div>
+      <div class="ib-body"><strong>Costo en uso — Accesorios:</strong> Un accesorio más caro pero más durable puede ser más económico. Calculamos el costo <em>por uso</em> y el <em>costo mensual real</em> para comparar de forma justa.</div>
+    </div>
+
+    <!-- Mopa -->
+    <div class="calc-card">
+      <div class="calc-card-header" onclick="toggleCard(this)">
+        <span class="icon">🧹</span>
+        <h3>Mopa / Trapeador</h3>
+        <button class="toggle-btn">▼</button>
+      </div>
+      <div class="calc-card-body">
+        <div class="comparison">
+          <div class="product-col cur">
+            <h4>Producto Actual</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="mp_cn" placeholder="Ej: Marca actual" oninput="calcAcc('mp')"></div>
+            <div class="field"><label>Precio por unidad</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="mp_cp" placeholder="0.00" step="0.01" min="0" oninput="calcAcc('mp')"></div></div>
+            <div class="field"><label>Vida útil (cantidad de lavados)</label><input type="number" id="mp_cw" placeholder="Ej: 50" min="1" oninput="calcAcc('mp')"></div>
+            <div class="field"><label>Usos por día</label><input type="number" id="mp_cd" placeholder="Ej: 1" value="1" min="1" oninput="calcAcc('mp')"></div>
+          </div>
+          <div class="vs-col"><div class="vs-badge">VS</div></div>
+          <div class="product-col our">
+            <h4>Nuestro Producto</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="mp_on" placeholder="Ej: Nuestra marca" oninput="calcAcc('mp')"></div>
+            <div class="field"><label>Precio por unidad</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="mp_op" placeholder="0.00" step="0.01" min="0" oninput="calcAcc('mp')"></div></div>
+            <div class="field"><label>Vida útil (cantidad de lavados)</label><input type="number" id="mp_ow" placeholder="Ej: 50" min="1" oninput="calcAcc('mp')"></div>
+            <div class="field"><label>Usos por día</label><input type="number" id="mp_od" placeholder="Ej: 1" value="1" min="1" oninput="calcAcc('mp')"></div>
+          </div>
+        </div>
+        <div class="results-wrap" id="mp_res" style="display:none">
+          <div class="results-title">Resultado — Costo en uso</div>
+          <div id="mp_bars"></div>
+          <div class="savings-row" id="mp_badge"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paños -->
+    <div class="calc-card">
+      <div class="calc-card-header" onclick="toggleCard(this)">
+        <span class="icon">🧽</span>
+        <h3>Paños / Trapos de Limpieza</h3>
+        <button class="toggle-btn">▼</button>
+      </div>
+      <div class="calc-card-body">
+        <div class="comparison">
+          <div class="product-col cur">
+            <h4>Producto Actual</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="pa_cn" placeholder="Ej: Marca actual" oninput="calcAcc('pa')"></div>
+            <div class="field"><label>Precio por unidad</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="pa_cp" placeholder="0.00" step="0.01" min="0" oninput="calcAcc('pa')"></div></div>
+            <div class="field"><label>Vida útil (lavados posibles)</label><input type="number" id="pa_cw" placeholder="Ej: 30" min="1" oninput="calcAcc('pa')"></div>
+            <div class="field"><label>Usos por día</label><input type="number" id="pa_cd" placeholder="Ej: 3" value="3" min="1" oninput="calcAcc('pa')"></div>
+          </div>
+          <div class="vs-col"><div class="vs-badge">VS</div></div>
+          <div class="product-col our">
+            <h4>Nuestro Producto</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="pa_on" placeholder="Ej: Nuestra marca" oninput="calcAcc('pa')"></div>
+            <div class="field"><label>Precio por unidad</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="pa_op" placeholder="0.00" step="0.01" min="0" oninput="calcAcc('pa')"></div></div>
+            <div class="field"><label>Vida útil (lavados posibles)</label><input type="number" id="pa_ow" placeholder="Ej: 30" min="1" oninput="calcAcc('pa')"></div>
+            <div class="field"><label>Usos por día</label><input type="number" id="pa_od" placeholder="Ej: 3" value="3" min="1" oninput="calcAcc('pa')"></div>
+          </div>
+        </div>
+        <div class="results-wrap" id="pa_res" style="display:none">
+          <div class="results-title">Resultado — Costo en uso</div>
+          <div id="pa_bars"></div>
+          <div class="savings-row" id="pa_badge"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guantes -->
+    <div class="calc-card">
+      <div class="calc-card-header" onclick="toggleCard(this)">
+        <span class="icon">🧤</span>
+        <h3>Guantes de Limpieza</h3>
+        <button class="toggle-btn">▼</button>
+      </div>
+      <div class="calc-card-body">
+        <div class="comparison">
+          <div class="product-col cur">
+            <h4>Producto Actual</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="gu_cn" placeholder="Ej: Marca actual" oninput="calcGU()"></div>
+            <div class="field"><label>Precio por par</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="gu_cp" placeholder="0.00" step="0.01" min="0" oninput="calcGU()"></div></div>
+            <div class="field"><label>Durabilidad (días de uso)</label><input type="number" id="gu_cw" placeholder="Ej: 30" min="1" oninput="calcGU()"></div>
+          </div>
+          <div class="vs-col"><div class="vs-badge">VS</div></div>
+          <div class="product-col our">
+            <h4>Nuestro Producto</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="gu_on" placeholder="Ej: Nuestra marca" oninput="calcGU()"></div>
+            <div class="field"><label>Precio por par</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="gu_op" placeholder="0.00" step="0.01" min="0" oninput="calcGU()"></div></div>
+            <div class="field"><label>Durabilidad (días de uso)</label><input type="number" id="gu_ow" placeholder="Ej: 30" min="1" oninput="calcGU()"></div>
+          </div>
+        </div>
+        <div class="results-wrap" id="gu_res" style="display:none">
+          <div class="results-title">Resultado — Costo en uso</div>
+          <div id="gu_bars"></div>
+          <div class="savings-row" id="gu_badge"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bolsas de residuo -->
+    <div class="calc-card">
+      <div class="calc-card-header" onclick="toggleCard(this)">
+        <span class="icon">🗑️</span>
+        <h3>Bolsas de Residuos</h3>
+        <button class="toggle-btn">▼</button>
+      </div>
+      <div class="calc-card-body">
+        <div class="comparison">
+          <div class="product-col cur">
+            <h4>Producto Actual</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="br_cn" placeholder="Ej: Marca actual" oninput="calcBR()"></div>
+            <div class="field"><label>Precio por rollo / paquete</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="br_cp" placeholder="0.00" step="0.01" min="0" oninput="calcBR()"></div></div>
+            <div class="field"><label>Unidades por rollo / paquete</label><input type="number" id="br_cu" placeholder="Ej: 10" min="1" oninput="calcBR()"></div>
+            <div class="field"><label>Bolsas usadas por día</label><input type="number" id="br_cd" placeholder="Ej: 5" min="1" oninput="calcBR()"></div>
+          </div>
+          <div class="vs-col"><div class="vs-badge">VS</div></div>
+          <div class="product-col our">
+            <h4>Nuestro Producto</h4>
+            <div class="field"><label>Nombre / Marca</label><input type="text" id="br_on" placeholder="Ej: Nuestra marca" oninput="calcBR()"></div>
+            <div class="field"><label>Precio por rollo / paquete</label><div class="prefix-wrap" data-prefix="$"><input type="number" id="br_op" placeholder="0.00" step="0.01" min="0" oninput="calcBR()"></div></div>
+            <div class="field"><label>Unidades por rollo / paquete</label><input type="number" id="br_ou" placeholder="Ej: 10" min="1" oninput="calcBR()"></div>
+            <div class="field"><label>Bolsas usadas por día</label><input type="number" id="br_od" placeholder="Ej: 5" min="1" oninput="calcBR()"></div>
+          </div>
+        </div>
+        <div class="results-wrap" id="br_res" style="display:none">
+          <div class="results-title">Resultado — Costo en uso</div>
+          <div id="br_bars"></div>
+          <div class="savings-row" id="br_badge"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ RESUMEN ══════════════ -->
+  <div id="tab-resumen" class="tab-panel">
+    <div id="resumen-content">
+      <div class="empty-state">
+        <div class="es-icon">📊</div>
+        <p>Completá las calculadoras en cada pestaña para ver el resumen comparativo aquí.</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<script>
+  // ─── Estado fiscal ───────────────────────────────────
+  // Los campos de precio siempre contienen el valor usado en cálculos:
+  //   - Modo CF/normal: precio bruto (con IVA incluido)
+  //   - Modo RI: precio neto (sin IVA, ya dividido por 1.21)
+  // ivaFactor es siempre 1; la transformación se aplica directamente a los campos.
+  let ivaFactor = 1;
+  let _modoRI   = false;
+
+  // IDs de todos los campos de precio
+  const PRICE_FIELDS = [
+    'ph_cp','ph_op','tr_cp','tr_op','ti_cp','ti_op','bm_cp','bm_op',
+    'sn_cp','sn_op','pm_cp','pm_op','dg_cp','dg_op','ds_cp','ds_op',
+    'dt_cp','dt_op','jb_cp','jb_op','mp_cp','mp_op','pa_cp','pa_op',
+    'gu_cp','gu_op','br_cp','br_op'
+  ];
+
+  function updateCondicion() {
+    const sel    = document.getElementById('condicionFiscal').value;
+    const ahoraRI = sel === 'ri';
+
+    if (ahoraRI && !_modoRI) {
+      // CF → RI: convertir valores brutos a neto (÷ 1.21)
+      PRICE_FIELDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const bruto = parseFloat(el.value) || 0;
+        if (bruto > 0) {
+          el.dataset.bruto = bruto;          // guardar original
+          el.value = +(bruto / 1.21).toFixed(2);
+        }
+      });
+    } else if (!ahoraRI && _modoRI) {
+      // RI → CF: restaurar precio bruto
+      PRICE_FIELDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const brutoOrig = parseFloat(el.dataset.bruto);
+        if (!isNaN(brutoOrig) && brutoOrig > 0) {
+          el.value = +brutoOrig.toFixed(2);
+          delete el.dataset.bruto;
+        } else {
+          // El usuario tipéo un neto en modo RI → convertir a bruto
+          const neto = parseFloat(el.value) || 0;
+          if (neto > 0) el.value = +(neto * 1.21).toFixed(2);
+        }
+      });
+    }
+
+    _modoRI = ahoraRI;
+
+    const note = document.getElementById('fiscal-note');
+    if (ahoraRI) {
+      note.textContent = '⚠ Los precios no incluyen IVA (neto). Aplica tasa del 21%.';
+      note.className = 'fiscal-note fiscal-note--ri';
+    } else {
+      note.textContent = '✓ Precios finales.';
+      note.className = 'fiscal-note fiscal-note--ok';
+    }
+    recalcAll();
+  }
+
+  function recalcAll() {
+    calcPH(); calcTR(); calcTI(); calcBM(); calcSN(); calcPM();
+    calcChem('dg'); calcChem('ds'); calcDT(); calcJB();
+    calcAcc('mp'); calcAcc('pa'); calcGU(); calcBR();
+  }
+
+
+  // ─── Tabs ────────────────────────────────────────────
+  function showTab(name, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('tab-' + name).classList.add('active');
+    if (name === 'resumen') buildResumen();
+  }
+
+  // ─── Toggle card ─────────────────────────────────────
+  function toggleCard(header) {
+    const body = header.nextElementSibling;
+    const btn = header.querySelector('.toggle-btn');
+    const collapsed = body.style.display === 'none';
+    body.style.display = collapsed ? 'block' : 'none';
+    btn.textContent = collapsed ? '▼' : '▶';
+  }
+
+  // ─── Helpers ─────────────────────────────────────────
+  // v() → valor numérico crudo del campo (cantidades, diluciones, etc.)
+  // p() → precio neto: divide por ivaFactor cuando el cliente es RI
+  const v = id => parseFloat(document.getElementById(id).value) || 0;
+  const t = id => document.getElementById(id).value.trim() || null;
+  const p = id => v(id) / ivaFactor;   // precio neto de IVA si corresponde
+
+  function fmt(n) {
+    if (!isFinite(n) || isNaN(n) || n <= 0) return '—';
+    let s;
+    if (n < 0.01)  s = n.toFixed(5);
+    else if (n < 1)   s = n.toFixed(4);
+    else if (n < 10)  s = n.toFixed(3);
+    else if (n < 100) s = n.toFixed(2);
+    else              s = n.toFixed(2);
+    s = s.replace(/\.?0+$/, '');
+    return '$' + s;
+  }
+
+  // ─── Render comparison bars ──────────────────────────
+  function renderBars(barsId, badgeId, resId, metrics, curVals, ourVals, curLabel, ourLabel) {
+    const anyData = metrics.some((_, i) => (curVals[i] > 0 || ourVals[i] > 0));
+    const res = document.getElementById(resId);
+    if (!anyData) { res.style.display = 'none'; return; }
+    res.style.display = 'block';
+
+    const cL = curLabel || 'Actual';
+    const oL = 'Melcity';
+
+    let html = '';
+    metrics.forEach((label, i) => {
+      const c = curVals[i], o = ourVals[i];
+      if (c <= 0 && o <= 0) return;
+      const max = Math.max(c, o);
+      const cPct = max > 0 ? Math.round(c / max * 100) : 0;
+      const oPct = max > 0 ? Math.round(o / max * 100) : 0;
+      html += `
+        <div class="metric-block">
+          <div class="metric-name">${label}</div>
+          <div class="bar-row">
+            <span class="bar-name cur" title="${cL}">${cL}</span>
+            <div class="bar-track"><div class="bar-fill cur" style="width:${cPct}%"></div></div>
+            <span class="bar-val cur">${fmt(c)}</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-name our" title="${oL}">${oL}</span>
+            <div class="bar-track"><div class="bar-fill our" style="width:${oPct}%"></div></div>
+            <span class="bar-val our">${fmt(o)}</span>
+          </div>
+        </div>`;
+    });
+    document.getElementById(barsId).innerHTML = html;
+
+    // Badge uses first metric
+    const c0 = curVals[0], o0 = ourVals[0];
+    let badge = '';
+    if (c0 > 0 && o0 > 0) {
+      const pct = (c0 - o0) / c0 * 100;
+      if (pct > 0.5) {
+        badge = `<span class="badge save">✓ Ahorro del ${pct.toFixed(1)}%</span>
+                 <span class="badge-note">— ${fmt(c0 - o0)} menos por ${metrics[0].toLowerCase()}</span>`;
+      } else if (pct < -0.5) {
+        badge = `<span class="badge more">↑ Costo ${Math.abs(pct).toFixed(1)}% mayor</span>
+                 <span class="badge-note">— diferencia de ${fmt(o0 - c0)} por ${metrics[0].toLowerCase()}</span>`;
+      } else {
+        badge = `<span class="badge equal">≈ Costo prácticamente igual</span>`;
+      }
+    }
+    document.getElementById(badgeId).innerHTML = badge;
+  }
+
+  // ─── PAPELERÍA ───────────────────────────────────────
+
+  function calcPH() {
+    const curPerM = (v('ph_cr')>0&&v('ph_cm')>0) ? p('ph_cp')/(v('ph_cr')*v('ph_cm')) : 0;
+    const ourPerM = (v('ph_or')>0&&v('ph_om')>0) ? p('ph_op')/(v('ph_or')*v('ph_om')) : 0;
+    renderBars('ph_bars','ph_badge','ph_res',
+      ['Costo por metro'],
+      [curPerM],[ourPerM],
+      t('ph_cn'),t('ph_on'));
+  }
+
+  function calcTR() {
+    const curPerM = (v('tr_cr')>0&&v('tr_cm')>0) ? p('tr_cp')/(v('tr_cr')*v('tr_cm')) : 0;
+    const ourPerM = (v('tr_or')>0&&v('tr_om')>0) ? p('tr_op')/(v('tr_or')*v('tr_om')) : 0;
+    // Costo por secado = costo por metro × (cms usados / 100)
+    const curPerS = (curPerM>0&&v('tr_cc')>0) ? curPerM * v('tr_cc') / 100 : 0;
+    const ourPerS = (ourPerM>0&&v('tr_oc')>0) ? ourPerM * v('tr_oc') / 100 : 0;
+    renderBars('tr_bars','tr_badge','tr_res',
+      ['Costo por metro', 'Costo por secado de manos'],
+      [curPerM, curPerS], [ourPerM, ourPerS],
+      t('tr_cn'),t('tr_on'));
+  }
+
+  function calcTI() {
+    const cU = v('ti_cu')||1, oU = v('ti_ou')||1;
+    const cPS = v('ti_cs')>0 ? p('ti_cp')/v('ti_cs') : 0;
+    const oPS = v('ti_os')>0 ? p('ti_op')/v('ti_os') : 0;
+    renderBars('ti_bars','ti_badge','ti_res',
+      ['Costo por secado de manos','Costo por hoja'],
+      [cPS*cU,cPS],[oPS*oU,oPS],
+      t('ti_cn'),t('ti_on'));
+  }
+
+  function calcBM() {
+    const cBob = v('bm_cr') || 1;
+    const oBob = v('bm_or') || 1;
+    const curPerM = v('bm_cm')>0 ? p('bm_cp')/(cBob*v('bm_cm')) : 0;
+    const ourPerM = v('bm_om')>0 ? p('bm_op')/(oBob*v('bm_om')) : 0;
+    renderBars('bm_bars','bm_badge','bm_res',
+      ['Costo por metro'],
+      [curPerM],[ourPerM],
+      t('bm_cn'),t('bm_on'));
+  }
+
+  function calcSN() {
+    const cPU = v('sn_cu')>0 ? p('sn_cp')/v('sn_cu') : 0;
+    const oPU = v('sn_ou')>0 ? p('sn_op')/v('sn_ou') : 0;
+    const cPCM = (v('sn_cs')>0&&cPU>0) ? cPU/(v('sn_cs')*v('sn_cs')) : 0;
+    const oPCM = (v('sn_os')>0&&oPU>0) ? oPU/(v('sn_os')*v('sn_os')) : 0;
+    const metrics=['Costo por servilleta'], cArr=[cPU], oArr=[oPU];
+    if(cPCM>0||oPCM>0){metrics.push('Costo por cm²');cArr.push(cPCM);oArr.push(oPCM);}
+    renderBars('sn_bars','sn_badge','sn_res',metrics,cArr,oArr,t('sn_cn'),t('sn_on'));
+  }
+
+  function calcPM() {
+    const cUU = v('pm_uu')||1, oUU = v('pm_ou2')||1;
+    const cPU = v('pm_cu')>0 ? p('pm_cp')/v('pm_cu') : 0;
+    const oPU = v('pm_ou')>0 ? p('pm_op')/v('pm_ou') : 0;
+    renderBars('pm_bars','pm_badge','pm_res',
+      ['Costo por uso','Costo por paño'],
+      [cPU/cUU,cPU],[oPU/oUU,oPU],
+      t('pm_cn'),t('pm_on'));
+  }
+
+  // ─── QUÍMICOS ────────────────────────────────────────
+
+  function calcChem(pfx) {
+    const cP = p(pfx+'_cp'), cV = v(pfx+'_cv'), cD = v(pfx+'_cd'), cC = v(pfx+'_cc');
+    const oP = p(pfx+'_op'), oV = v(pfx+'_ov'), oD = v(pfx+'_od'), oC = v(pfx+'_oc');
+
+    // Cost per liter of concentrate
+    const cCPLconc = cV > 0 ? cP / cV : 0;
+    const oCPLconc = oV > 0 ? oP / oV : 0;
+
+    // Yield: 1 liter conc + D liters water = (1+D) liters ready
+    const cReady = cCPLconc / (1 + cD);   // cost per liter ready
+    const oReady = oCPLconc / (1 + oD);
+
+    // Liters ready from full package
+    const cTotalL = cV * (1 + cD);
+    const oTotalL = oV * (1 + oD);
+
+    const metrics = ['Costo por litro listo para usar', 'Costo por litro de concentrado'];
+    const cArr = [cReady > 0 ? cReady : cCPLconc, cCPLconc];
+    const oArr = [oReady > 0 ? oReady : oCPLconc, oCPLconc];
+
+    if (cC > 0 || oC > 0) {
+      metrics.push('Costo por m² de superficie');
+      cArr.push(cC > 0 && cReady > 0 ? cReady / cC : 0);
+      oArr.push(oC > 0 && oReady > 0 ? oReady / oC : 0);
+    }
+
+    renderBars(pfx+'_bars', pfx+'_badge', pfx+'_res', metrics, cArr, oArr, t(pfx+'_cn'), t(pfx+'_on'));
+  }
+
+  function calcDT() {
+    const cWashes = (v('dt_cd') > 0 && v('dt_cv') > 0) ? (v('dt_cv') * 1000) / v('dt_cd') : 0;
+    const oWashes = (v('dt_od') > 0 && v('dt_ov') > 0) ? (v('dt_ov') * 1000) / v('dt_od') : 0;
+    const cPW = cWashes > 0 ? p('dt_cp') / cWashes : 0;
+    const oPW = oWashes > 0 ? p('dt_op') / oWashes : 0;
+    const cPL = v('dt_cv') > 0 ? p('dt_cp') / v('dt_cv') : 0;
+    const oPL = v('dt_ov') > 0 ? p('dt_op') / v('dt_ov') : 0;
+    renderBars('dt_bars','dt_badge','dt_res',
+      ['Costo por lavado', 'Costo por litro', 'Lavados por envase'],
+      [cPW, cPL, cWashes],
+      [oPW, oPL, oWashes],
+      t('dt_cn'), t('dt_on')
+    );
+  }
+
+  function calcJB() {
+    const cUsos = (v('jb_cd') > 0 && v('jb_cv') > 0) ? (v('jb_cv') * 1000) / v('jb_cd') : 0;
+    const oUsos = (v('jb_od') > 0 && v('jb_ov') > 0) ? (v('jb_ov') * 1000) / v('jb_od') : 0;
+    const cPU = cUsos > 0 ? p('jb_cp') / cUsos : 0;
+    const oPU = oUsos > 0 ? p('jb_op') / oUsos : 0;
+    renderBars('jb_bars','jb_badge','jb_res',
+      ['Costo por aplicación', 'Costo por litro'],
+      [cPU, v('jb_cv') > 0 ? p('jb_cp')/v('jb_cv') : 0],
+      [oPU, v('jb_ov') > 0 ? p('jb_op')/v('jb_ov') : 0],
+      t('jb_cn'), t('jb_on')
+    );
+  }
+
+  // ─── ACCESORIOS ──────────────────────────────────────
+
+  function calcAcc(pfx) {
+    const cPU  = v(pfx+'_cw') > 0 ? p(pfx+'_cp') / v(pfx+'_cw') : 0;
+    const oPU  = v(pfx+'_ow') > 0 ? p(pfx+'_op') / v(pfx+'_ow') : 0;
+    const cDd  = v(pfx+'_cd') || 1, oDd = v(pfx+'_od') || 1;
+    const cDly = cPU * cDd, oDly = oPU * oDd;
+    const DAYS = 26;
+    renderBars(pfx+'_bars', pfx+'_badge', pfx+'_res',
+      ['Costo por uso', 'Costo diario', `Costo mensual (~${DAYS} días)`],
+      [cPU, cDly, cDly * DAYS],
+      [oPU, oDly, oDly * DAYS],
+      t(pfx+'_cn'), t(pfx+'_on')
+    );
+  }
+
+  function calcGU() {
+    const cPD = v('gu_cw') > 0 ? p('gu_cp') / v('gu_cw') : 0;
+    const oPD = v('gu_ow') > 0 ? p('gu_op') / v('gu_ow') : 0;
+    renderBars('gu_bars','gu_badge','gu_res',
+      ['Costo por día', 'Costo mensual (~26 días)'],
+      [cPD, cPD * 26],
+      [oPD, oPD * 26],
+      t('gu_cn'), t('gu_on')
+    );
+  }
+
+  function calcBR() {
+    const cPU = v('br_cu') > 0 ? p('br_cp') / v('br_cu') : 0;
+    const oPU = v('br_ou') > 0 ? p('br_op') / v('br_ou') : 0;
+    const cDly = cPU * (v('br_cd') || 1);
+    const oDly = oPU * (v('br_od') || 1);
+    renderBars('br_bars','br_badge','br_res',
+      ['Costo por bolsa', 'Costo diario', 'Costo mensual (~26 días)'],
+      [cPU, cDly, cDly * 26],
+      [oPU, oDly, oDly * 26],
+      t('br_cn'), t('br_on')
+    );
+  }
+
+  // ─── RESUMEN ─────────────────────────────────────────
+
+  function getPrimary(key) {
+    switch(key) {
+      case 'ph': {
+        const c=(v('ph_cr')>0&&v('ph_cm')>0)?p('ph_cp')/(v('ph_cr')*v('ph_cm')):0;
+        const o=(v('ph_or')>0&&v('ph_om')>0)?p('ph_op')/(v('ph_or')*v('ph_om')):0;
+        return {c, o, unit:'por metro', cn:t('ph_cn'), on:t('ph_on')};
+      }
+      case 'tr': {
+        const c=(v('tr_cr')>0&&v('tr_cm')>0)?p('tr_cp')/(v('tr_cr')*v('tr_cm')):0;
+        const o=(v('tr_or')>0&&v('tr_om')>0)?p('tr_op')/(v('tr_or')*v('tr_om')):0;
+        return {c, o, unit:'por metro', cn:t('tr_cn'), on:t('tr_on')};
+      }
+      case 'ti': {
+        const cu=v('ti_cu')||1, ou=v('ti_ou')||1;
+        const cPS=v('ti_cs')>0?p('ti_cp')/v('ti_cs'):0, oPS=v('ti_os')>0?p('ti_op')/v('ti_os'):0;
+        return {c:cPS*cu, o:oPS*ou, unit:'por secado', cn:t('ti_cn'), on:t('ti_on')};
+      }
+      case 'bm': {
+        const c=v('bm_cm')>0?p('bm_cp')/v('bm_cm'):0;
+        const o=v('bm_om')>0?p('bm_op')/v('bm_om'):0;
+        return {c, o, unit:'por metro', cn:t('bm_cn'), on:t('bm_on')};
+      }
+      case 'sn': {
+        return {c:v('sn_cu')>0?p('sn_cp')/v('sn_cu'):0, o:v('sn_ou')>0?p('sn_op')/v('sn_ou'):0, unit:'por servilleta', cn:t('sn_cn'), on:t('sn_on')};
+      }
+      case 'pm': {
+        const cUU=v('pm_uu')||1, oUU=v('pm_ou2')||1;
+        const cPU=v('pm_cu')>0?p('pm_cp')/v('pm_cu'):0, oPU=v('pm_ou')>0?p('pm_op')/v('pm_ou'):0;
+        return {c:cPU/cUU, o:oPU/oUU, unit:'por uso', cn:t('pm_cn'), on:t('pm_on')};
+      }
+      case 'dg': case 'ds': {
+        const pfx=key;
+        const cCPL=v(pfx+'_cv')>0?p(pfx+'_cp')/v(pfx+'_cv'):0;
+        const oCPL=v(pfx+'_ov')>0?p(pfx+'_op')/v(pfx+'_ov'):0;
+        return {c:cCPL/(1+v(pfx+'_cd')), o:oCPL/(1+v(pfx+'_od')), unit:'por litro listo', cn:t(pfx+'_cn'), on:t(pfx+'_on')};
+      }
+      case 'dt': {
+        const cW=(v('dt_cd')>0&&v('dt_cv')>0)?(v('dt_cv')*1000)/v('dt_cd'):0;
+        const oW=(v('dt_od')>0&&v('dt_ov')>0)?(v('dt_ov')*1000)/v('dt_od'):0;
+        return {c:cW>0?p('dt_cp')/cW:0, o:oW>0?p('dt_op')/oW:0, unit:'por lavado', cn:t('dt_cn'), on:t('dt_on')};
+      }
+      case 'jb': {
+        const cU=(v('jb_cd')>0&&v('jb_cv')>0)?(v('jb_cv')*1000)/v('jb_cd'):0;
+        const oU=(v('jb_od')>0&&v('jb_ov')>0)?(v('jb_ov')*1000)/v('jb_od'):0;
+        return {c:cU>0?p('jb_cp')/cU:0, o:oU>0?p('jb_op')/oU:0, unit:'por aplicación', cn:t('jb_cn'), on:t('jb_on')};
+      }
+      case 'mp': case 'pa': {
+        const pfx=key;
+        return {c:v(pfx+'_cw')>0?p(pfx+'_cp')/v(pfx+'_cw'):0, o:v(pfx+'_ow')>0?p(pfx+'_op')/v(pfx+'_ow'):0, unit:'por uso', cn:t(pfx+'_cn'), on:t(pfx+'_on')};
+      }
+      case 'gu': {
+        return {c:v('gu_cw')>0?p('gu_cp')/v('gu_cw'):0, o:v('gu_ow')>0?p('gu_op')/v('gu_ow'):0, unit:'por día', cn:t('gu_cn'), on:t('gu_on')};
+      }
+      case 'br': {
+        return {c:v('br_cu')>0?p('br_cp')/v('br_cu'):0, o:v('br_ou')>0?p('br_op')/v('br_ou'):0, unit:'por bolsa', cn:t('br_cn'), on:t('br_on')};
+      }
+    }
+    return null;
+  }
+
+  const CATALOG = [
+    {key:'ph', name:'Papel Higiénico',     cat:'Papelería'},
+    {key:'tr', name:'Toallas en Rollo',    cat:'Papelería'},
+    {key:'ti', name:'Toallas Intercaladas',cat:'Papelería'},
+    {key:'bm', name:'Bobinas Multiuso',    cat:'Papelería'},
+    {key:'sn', name:'Servilletas',         cat:'Papelería'},
+    {key:'pm', name:'Paños Multiuso',      cat:'Papelería'},
+    {key:'dg', name:'Desengrasante',       cat:'Químicos'},
+    {key:'ds', name:'Desinfectante',       cat:'Químicos'},
+    {key:'dt', name:'Detergente',          cat:'Químicos'},
+    {key:'jb', name:'Jabón de Manos',      cat:'Químicos'},
+    {key:'mp', name:'Mopa / Trapeador',    cat:'Accesorios'},
+    {key:'pa', name:'Paños / Trapos',      cat:'Accesorios'},
+    {key:'gu', name:'Guantes',             cat:'Accesorios'},
+    {key:'br', name:'Bolsas de Residuos',  cat:'Accesorios'},
+  ];
+
+  function buildResumen() {
+    const items = CATALOG.map(c => ({...c, data: getPrimary(c.key)}))
+      .filter(c => c.data && (c.data.c > 0 || c.data.o > 0));
+
+    if (items.length === 0) {
+      document.getElementById('resumen-content').innerHTML = `
+        <div class="empty-state">
+          <div class="es-icon">📊</div>
+          <p>Completá las calculadoras en cada pestaña para ver el resumen comparativo aquí.</p>
+        </div>`;
+      return;
+    }
+
+    const client  = document.getElementById('clientName').value || 'el cliente';
+    const vendedor = document.getElementById('vendedor').value || '';
+    const fecha   = document.getElementById('fechaVisita').value
+      ? new Date(document.getElementById('fechaVisita').value + 'T12:00:00').toLocaleDateString('es-AR', {day:'2-digit',month:'long',year:'numeric'})
+      : new Date().toLocaleDateString('es-AR', {day:'2-digit',month:'long',year:'numeric'});
+
+    const withBoth = items.filter(i => i.data.c > 0 && i.data.o > 0);
+    const cheaper  = withBoth.filter(i => i.data.o < i.data.c * 0.995);
+    const similar  = withBoth.filter(i => Math.abs(i.data.o - i.data.c) / i.data.c < 0.005);
+    const costlier = withBoth.filter(i => i.data.o > i.data.c * 1.005);
+
+    let rows = '';
+    items.forEach(item => {
+      const d = item.data;
+      let badge = '';
+      if (d.c > 0 && d.o > 0) {
+        const pct = (d.c - d.o) / d.c * 100;
+        if (pct > 0.5)       badge = `<span class="badge save">✓ -${pct.toFixed(1)}%</span>`;
+        else if (pct < -0.5) badge = `<span class="badge more">↑ +${Math.abs(pct).toFixed(1)}%</span>`;
+        else                 badge = `<span class="badge equal">≈ Igual</span>`;
+      }
+      rows += `
+        <tr>
+          <td><div class="prod-name">${item.name}</div><div class="prod-cat">${item.cat}</div></td>
+          <td><div class="cost-val" style="color:#92400e">${fmt(d.c)}</div><div class="cost-sub">${d.cn || 'Producto actual'} · ${d.unit}</div></td>
+          <td><div class="cost-val" style="color:#1e3a8a">${fmt(d.o)}</div><div class="cost-sub">${d.on || 'Nuestro producto'} · ${d.unit}</div></td>
+          <td style="text-align:center">${badge}</td>
+        </tr>`;
+    });
+
+    document.getElementById('resumen-content').innerHTML = `
+      <div class="summary-header">
+        <h2>Distribuidora Melcity — Análisis de Costo en Uso</h2>
+        <p>Cliente: <strong>${client}</strong>${vendedor ? ' · Asesor: <strong>' + vendedor + '</strong>' : ''} · ${fecha}</p>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="klabel">Productos comparados</div>
+          <div class="kvalue" style="color:var(--primary)">${items.length}</div>
+          <div class="ksub">categorías analizadas</div>
+        </div>
+        <div class="kpi-card">
+          <div class="klabel">Con ahorro</div>
+          <div class="kvalue" style="color:var(--green)">${cheaper.length}</div>
+          <div class="ksub">menor costo en uso con nuestros productos</div>
+        </div>
+        <div class="kpi-card">
+          <div class="klabel">Costo similar</div>
+          <div class="kvalue" style="color:var(--amber)">${similar.length}</div>
+          <div class="ksub">diferencia menor al 0,5%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="klabel">Costo mayor</div>
+          <div class="kvalue" style="color:var(--red)">${costlier.length}</div>
+          <div class="ksub">nuestro producto tiene mayor costo en uso</div>
+        </div>
+      </div>
+
+      <div class="summary-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th style="color:#92400e">Producto Actual</th>
+              <th style="color:#1e3a8a">Nuestro Producto</th>
+              <th style="text-align:center">Resultado</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+
+      <div style="display:flex; gap:12px; justify-content:flex-end; flex-wrap:wrap;">
+        <button class="print-btn" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+      </div>`;
+  }
+
+  // ─── Init ────────────────────────────────────────────
+  document.getElementById('fechaVisita').value = new Date().toISOString().split('T')[0];
+
+  // ─── Excel import ─────────────────────────────────────────────────────────
+  // Maps column names in the Excel to HTML input IDs for "Nuestro Producto"
+  const TYPE_MAP = {
+    'Papel Higiénico': {
+      'Nombre / Marca':     'ph_on',
+      'Precio':             'ph_op',
+      'Rollos por paquete': 'ph_or',
+      'Metros por rollo':   'ph_om',
+      'Capas / Hojas':      'ph_ol',
+    },
+    'Toallas en Rollo': {
+      'Nombre / Marca':     'tr_on',
+      'Precio':             'tr_op',
+      'Rollos por paquete': 'tr_or',
+      'Metros por rollo':   'tr_om',
+      'CMs por secado':     'tr_oc',
+    },
+    'Toallas Intercaladas': {
+      'Nombre / Marca':    'ti_on',
+      'Precio':            'ti_op',
+      'Total hojas (caja)':'ti_os',
+      'Hojas por secado':  'ti_ou',
+    },
+    'Bobinas Multiuso': {
+      'Nombre / Marca':    'bm_on',
+      'Precio':            'bm_op',
+      'Bobinas por paquete':'bm_or',
+      'Metros por bobina': 'bm_om',
+    },
+    'Servilletas': {
+      'Nombre / Marca':       'sn_on',
+      'Precio':               'sn_op',
+      'Unidades por paquete': 'sn_ou',
+      'Tamaño (cm)':          'sn_os',
+    },
+    'Paños Multiuso': {
+      'Nombre / Marca':       'pm_on',
+      'Precio':               'pm_op',
+      'Unidades por paquete': 'pm_ou',
+      'Usos por paño':        'pm_ou2',
+    },
+    'Desengrasante': {
+      'Nombre / Marca':           'dg_on',
+      'Precio':                   'dg_op',
+      'Contenido (litros)':       'dg_ov',
+      'Dilución (partes agua)':   'dg_od',
+      'Rendimiento (m² / litro)': 'dg_oc',
+    },
+    'Desinfectante': {
+      'Nombre / Marca':           'ds_on',
+      'Precio':                   'ds_op',
+      'Contenido (litros)':       'ds_ov',
+      'Dilución (partes agua)':   'ds_od',
+      'Rendimiento (m² / litro)': 'ds_oc',
+    },
+    'Detergente': {
+      'Nombre / Marca':     'dt_on',
+      'Precio':             'dt_op',
+      'Contenido (litros)': 'dt_ov',
+      'Dosis (ml)':         'dt_od',
+    },
+    'Jabón de Manos': {
+      'Nombre / Marca':     'jb_on',
+      'Precio':             'jb_op',
+      'Contenido (litros)': 'jb_ov',
+      'Dosis (ml)':         'jb_od',
+    },
+    'Mopa / Trapeador': {
+      'Nombre / Marca':      'mp_on',
+      'Precio':              'mp_op',
+      'Vida útil (lavados)': 'mp_ow',
+      'Usos por día':        'mp_od',
+    },
+    'Paños / Trapos': {
+      'Nombre / Marca':      'pa_on',
+      'Precio':              'pa_op',
+      'Vida útil (lavados)': 'pa_ow',
+      'Usos por día':        'pa_od',
+    },
+    'Guantes': {
+      'Nombre / Marca':    'gu_on',
+      'Precio':            'gu_op',
+      'Durabilidad (días)':'gu_ow',
+    },
+    'Bolsas de Residuos': {
+      'Nombre / Marca':       'br_on',
+      'Precio':               'br_op',
+      'Unidades por paquete': 'br_ou',
+      'Usos por día':         'br_od',
+    },
+  };
+
+  // ─── Fotos de producto ───────────────────────────────
+  // Mapea tipo → ID del input "Nombre" del lado "Nuestro Producto"
+  // (se usa para encontrar el contenedor .product-col.our)
+  const PHOTO_ANCHOR = {
+    'Papel Higiénico':      'ph_on',
+    'Toallas en Rollo':     'tr_on',
+    'Toallas Intercaladas': 'ti_on',
+    'Bobinas Multiuso':     'bm_on',
+    'Servilletas':          'sn_on',
+    'Paños Multiuso':       'pm_on',
+    'Desengrasante':        'dg_on',
+    'Desinfectante':        'ds_on',
+    'Detergente':           'dt_on',
+    'Jabón de Manos':       'jb_on',
+    'Mopa / Trapeador':     'mp_on',
+    'Paños / Trapos':       'pa_on',
+    'Guantes':              'gu_on',
+    'Bolsas de Residuos':   'br_on',
+  };
+
+  // ─── Matching flexible de tipo de producto ───────────
+  // Normaliza tildes, mayúsculas y espacios para comparar
+  function _normTipo(s) {
+    return String(s).trim()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase().replace(/\s+/g, ' ');
+  }
+  // Tabla normalizada de keys canónicas del TYPE_MAP
+  const _TIPO_NORM = {};
+  Object.keys(TYPE_MAP).forEach(k => { _TIPO_NORM[_normTipo(k)] = k; });
+  // Aliases de retrocompatibilidad (template viejo → key actual)
+  const _TIPO_ALIAS = {
+    'papel toalla':       'Toallas en Rollo',
+    'toalla en rollo':    'Toallas en Rollo',
+    'toallas de rollo':   'Toallas en Rollo',
+    'panos multiuso':     'Paños Multiuso',
+    'pano multiuso':      'Paños Multiuso',
+    'jabon de manos':     'Jabón de Manos',
+    'bolsas residuos':    'Bolsas de Residuos',
+    'mopa trapeador':     'Mopa / Trapeador',
+    'panos trapos':       'Paños / Trapos',
+  };
+  function matchTipo(raw) {
+    const s = String(raw || '').trim();
+    if (!s) return null;
+    if (TYPE_MAP[s]) return s;                 // coincidencia exacta
+    const n = _normTipo(s);
+    return _TIPO_ALIAS[n] || _TIPO_NORM[n] || null;  // alias o flexible
+  }
+
+  function setProductPhoto(tipo, url) {
+    const anchorId = PHOTO_ANCHOR[tipo];
+    if (!anchorId) return;
+    const anchor = document.getElementById(anchorId);
+    if (!anchor) return;
+    const ourCol = anchor.closest('.product-col.our');
+    if (!ourCol) return;
+
+    const wrapId = anchorId + '_pw';
+    let wrap = document.getElementById(wrapId);
+    if (!wrap) {
+      wrap = document.createElement('div');
+      wrap.id = wrapId;
+      wrap.className = 'product-photo-wrap';
+      wrap.style.display = 'none';
+      const imgEl = document.createElement('img');
+      imgEl.className = 'product-photo';
+      imgEl.alt = tipo;
+      wrap.appendChild(imgEl);
+      // Insertar después del selector si ya existe, si no después del h4
+      const psWrap = ourCol.querySelector('.ps-wrap');
+      const after  = psWrap || ourCol.querySelector('h4');
+      if (after) after.after(wrap); else ourCol.prepend(wrap);
+    }
+
+    if (!url) { wrap.style.display = 'none'; return; }
+
+    // Limpiar contenido anterior (puede haber un error-placeholder)
+    wrap.innerHTML = '';
+    const img = document.createElement('img');
+    img.className = 'product-photo';
+    img.alt = tipo;
+    wrap.appendChild(img);
+
+    // Resolver URL: si es relativa, construir con base del catálogo remoto
+    const resolvedUrl = _resolvePhotoUrl(url);
+
+    img.onload  = () => { wrap.style.display = 'flex'; _alignCurColumn(ourCol); };
+    img.onerror = () => {
+      const isImg = /\.(jpe?g|png|webp|gif|svg|avif)(\?.*)?$/i.test(resolvedUrl);
+      const hint  = isImg
+        ? 'La URL parece correcta pero no carga (¿requiere login o está caída?)'
+        : '⚠ La URL no apunta a una imagen directa. Usá la URL directa de la imagen (.jpg/.png/.webp).';
+      wrap.innerHTML = `<div class="photo-err">🖼 No se pudo cargar<br>
+        <a href="${resolvedUrl}" target="_blank" rel="noopener" class="photo-url-link">${resolvedUrl}</a><br>
+        <small>${hint}</small></div>`;
+      wrap.style.display = 'flex';
+      _alignCurColumn(ourCol);
+    };
+    img.src = resolvedUrl;
+  }
+
+  // Si la URL de una foto es relativa (sin http), la resuelve contra la carpeta del catálogo.
+  // Así los vendedores solo tienen que poner el nombre del archivo en el Excel (ej: "6130.png")
+  // y las fotos cargan automáticamente desde GitHub.
+  function _resolvePhotoUrl(url) {
+    if (!url) return null;
+    if (/^https?:\/\//i.test(url)) return url;   // ya es URL completa → usar tal cual
+    // Extraer solo el nombre de archivo (maneja rutas Windows y Unix) y normalizar a minúsculas
+    const filename = url.replace(/\\/g, '/').split('/').pop().toLowerCase();
+    if (!filename) return null;
+    if (CATALOGO_URL) {
+      // Construir URL raw de GitHub con el nombre del archivo
+      const base = CATALOGO_URL.substring(0, CATALOGO_URL.lastIndexOf('/') + 1);
+      return base + filename;
+    }
+    return filename;  // modo local: solo el nombre (funciona si la foto está junto al HTML)
+  }
+
+  // Parsea las filas del Excel y devuelve { products, total, skipped }
+  function _parseXlsxRows(rows) {
+    const products = {};
+    let total = 0, skipped = 0;
+    rows.forEach(row => {
+      const tipo = matchTipo(row['Tipo de Producto']);
+      if (!tipo) { skipped++; return; }
+      const map = TYPE_MAP[tipo];
+      const product = {};
+      Object.keys(map).forEach(col => {
+        const raw = row[col];
+        if (raw !== '' && raw !== undefined && raw !== null) product[col] = raw;
+      });
+      const foto = _resolvePhotoUrl(String(row['Foto (URL)'] || '').trim());
+      if (foto) product['_foto'] = foto;
+      if (!products[tipo]) products[tipo] = [];
+      products[tipo].push(product);
+      total++;
+    });
+    return { products, total, skipped };
+  }
+
+  // Aplica un catálogo parseado: inyecta selectores, guarda en localStorage
+  function _applyCatalog(products, total, skipped, source) {
+    loadedProducts = products;
+    injectProductSelectors();
+    recalcAll();
+    saveCatalogo();
+    updateGearStatus();
+    const tiposArr = Object.keys(loadedProducts);
+    let msg = tiposArr.length
+      ? `✓ ${total} producto${total>1?'s':''} cargados${source?' ('+source+')':''} → ${tiposArr.join(' · ')}`
+      : '⚠ No se reconoció ningún tipo de producto. Verificá el template.';
+    if (skipped) msg += ` (${skipped} fila${skipped>1?'s':''} no reconocida${skipped>1?'s':''})`;
+    showToast(msg, tiposArr.length ? 'ok' : 'error');
+  }
+
+  function handleXlsx(input) {
+    const file = input.files[0];
+    if (!file) return;
+    input.value = '';
+    if (typeof XLSX === 'undefined') {
+      showToast('⚠ La librería Excel no cargó. Verificá tu conexión a internet.', 'error');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const wb   = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+        const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '', range: 1 });
+        if (!rows.length) { showToast('⚠ El archivo no tiene datos.', 'error'); return; }
+        const { products, total, skipped } = _parseXlsxRows(rows);
+        _applyCatalog(products, total, skipped, null);
+      } catch(err) {
+        console.error(err);
+        showToast('⚠ No se pudo leer el archivo. Usá el template correcto.', 'error');
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  // ─── VENDEDORES ───────────────────────────────────────────────────────────────
+  let loadedVendors  = [];
+  let selectedVendor = null;
+
+  function _parseVendedoresRows(rows) {
+    // Convierte cualquier valor a string de forma segura (maneja números, null, undefined)
+    const _s = (v) => (v === null || v === undefined) ? '' : String(v).trim();
+    return rows
+      .map(r => ({
+        nombre:    _s(r['Nombre']),
+        // Acepta con y sin tilde, y valor numérico (SheetJS puede leer el tel como número)
+        telefono:  _s(r['Telefono'] ?? r['Teléfono'] ?? r['telefono'] ?? r['TELEFONO'] ?? ''),
+        email:     _s(r['Email']     || r['email']     || ''),
+        web:       _s(r['Web']       || r['web']       || ''),
+        instagram: _s(r['Instagram'] || r['instagram'] || ''),
+        foto:      _resolvePhotoUrl(_s(r['Foto (URL)'] || r['foto'] || '')),
+      }))
+      .filter(v => v.nombre && v.nombre.length > 1);
+  }
+
+  async function autoLoadVendors() {
+    if (!VENDEDORES_URL) return;
+    if (typeof XLSX === 'undefined') return;
+    try {
+      const resp = await fetch(VENDEDORES_URL, { cache: 'no-cache' });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const buf  = await resp.arrayBuffer();
+      const wb   = XLSX.read(new Uint8Array(buf), { type: 'array' });
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '', range: 1 });
+      loadedVendors = _parseVendedoresRows(rows);
+      if (loadedVendors.length) _injectVendorSelector();
+    } catch(err) {
+      console.warn('Vendedores no cargados:', err.message);
+    }
+  }
+
+  function _injectVendorSelector() {
+    const sel  = document.getElementById('vendedorSel');
+    const text = document.getElementById('vendedorText');
+    if (!sel || !text) return;
+    sel.innerHTML = '<option value="">— Elegir vendedor —</option>' +
+      loadedVendors.map((v, i) => `<option value="${i}">${v.nombre}</option>`).join('');
+    sel.style.display  = '';
+    text.style.display = 'none';
+  }
+
+  function selectVendor(idx) {
+    const bar   = document.getElementById('vendorInfoBar');
+    const chips = document.getElementById('vendorChips');
+    if (idx === '' || idx === null || idx === undefined) {
+      selectedVendor = null;
+      if (bar) bar.style.display = 'none';
+      return;
+    }
+    selectedVendor = loadedVendors[parseInt(idx)];
+    if (!selectedVendor || !bar || !chips) return;
+    const v = selectedVendor;
+    let html = '';
+    if (v.telefono)  html += `<a href="tel:${v.telefono}" class="vchip">📞 ${v.telefono}</a>`;
+    if (v.email)     html += `<a href="mailto:${v.email}" class="vchip">✉️ ${v.email}</a>`;
+    if (v.web) {
+      const webUrl = /^https?:\/\//i.test(v.web) ? v.web : 'https://' + v.web;
+      html += `<a href="${webUrl}" target="_blank" rel="noopener" class="vchip">🌐 ${v.web}</a>`;
+    }
+    if (v.instagram) {
+      const igUser = v.instagram.replace(/^@/, '');
+      html += `<a href="https://instagram.com/${igUser}" target="_blank" rel="noopener" class="vchip">📷 ${v.instagram}</a>`;
+    }
+    chips.innerHTML    = html;
+    bar.style.display  = html ? 'flex' : 'none';
+  }
+
+  // ─── PROPUESTA PDF ────────────────────────────────────────────────────────────
+  // Lee el nombre del producto "nuestro": primero del input, luego del selector del catálogo
+  function _getOurName(anchorId) {
+    const inputVal = document.getElementById(anchorId)?.value?.trim();
+    if (inputVal) return inputVal;
+    // Si el input está vacío, leerlo del option seleccionado en el selector de catálogo
+    const ourCol = document.getElementById(anchorId)?.closest?.('.product-col.our');
+    if (!ourCol) return '';
+    const sel = ourCol.querySelector('.ps-select');
+    if (!sel || !sel.value || isNaN(parseInt(sel.value))) return '';
+    return sel.options[sel.selectedIndex]?.text || '';
+  }
+
+  function _getOurPhoto(anchorId) {
+    const wrap = document.getElementById(anchorId + '_pw');
+    if (!wrap) return null;
+    const img = wrap.querySelector('img.product-photo');
+    return (img && img.complete && img.naturalWidth > 0) ? img.src : null;
+  }
+
+  function _fmtMoney(n) {
+    if (!n || n <= 0) return '—';
+    return '$\u00a0' + n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function _fmtCosto(n, unit) {
+    if (!n || n <= 0) return '—';
+    return '$\u00a0' + n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '\u00a0' + unit;
+  }
+
+  function _getSections() {
+    // Helper: crea un spec si el valor es válido
+    const sp = (label, val, unit='') => (val > 0 || (typeof val==='string'&&val))
+      ? { label, val: (typeof val==='number' ? val : val) + (unit ? '\u00a0'+unit : '') }
+      : null;
+    const spf = (...items) => items.filter(Boolean);   // filtra nulls
+
+    const sections = [];
+
+    // ── Papel Higiénico ──
+    if (v('ph_cp') > 0 || v('ph_op') > 0) {
+      const cM = (v('ph_cr')>0&&v('ph_cm')>0) ? p('ph_cp')/(v('ph_cr')*v('ph_cm')) : 0;
+      const oM = (v('ph_or')>0&&v('ph_om')>0) ? p('ph_op')/(v('ph_or')*v('ph_om')) : 0;
+      const cH = v('ph_cl'), oH = v('ph_ol');
+      sections.push({
+        name:'Papel Higiénico Institucional', icon:'🧻', priceUnit:'/paquete',
+        curName:t('ph_cn')||'Producto actual', ourName:_getOurName('ph_on')||'Papel Higiénico',
+        curPrice:v('ph_cp'), ourPrice:v('ph_op'),
+        ourPhoto:_getOurPhoto('ph_on'),
+        curSpecs: spf(sp('Rollos/paquete',v('ph_cr')), sp('Metros/rollo',v('ph_cm'),'m'), cH?{label:'Hojas',val:cH+(cH>1?' hojas':' hoja')}:null),
+        ourSpecs: spf(sp('Rollos/paquete',v('ph_or')), sp('Metros/rollo',v('ph_om'),'m'), oH?{label:'Hojas',val:oH+(oH>1?' hojas':' hoja')}:null),
+        metrics: cM||oM ? [{ label:'Costo por metro', cur:cM, our:oM, unit:'/m' }] : [],
+      });
+    }
+
+    // ── Toallas en Rollo ──
+    if (v('tr_cp') > 0 || v('tr_op') > 0) {
+      const cM = (v('tr_cr')>0&&v('tr_cm')>0) ? p('tr_cp')/(v('tr_cr')*v('tr_cm')) : 0;
+      const oM = (v('tr_or')>0&&v('tr_om')>0) ? p('tr_op')/(v('tr_or')*v('tr_om')) : 0;
+      const cS = (cM>0&&v('tr_cc')>0) ? cM*v('tr_cc')/100 : 0;
+      const oS = (oM>0&&v('tr_oc')>0) ? oM*v('tr_oc')/100 : 0;
+      const mets = [];
+      if (cM||oM) mets.push({ label:'Costo por metro',          cur:cM, our:oM, unit:'/m' });
+      if (cS||oS) mets.push({ label:'Costo por secado de manos',cur:cS, our:oS, unit:'/secado' });
+      sections.push({
+        name:'Toallas en Rollo', icon:'🌀', priceUnit:'/paquete',
+        curName:t('tr_cn')||'Producto actual', ourName:_getOurName('tr_on')||'Toallas en Rollo',
+        curPrice:v('tr_cp'), ourPrice:v('tr_op'),
+        ourPhoto:_getOurPhoto('tr_on'),
+        curSpecs: spf(sp('Rollos/paquete',v('tr_cr')), sp('Metros/rollo',v('tr_cm'),'m'), sp('Cms/secado',v('tr_cc'),'cm')),
+        ourSpecs: spf(sp('Rollos/paquete',v('tr_or')), sp('Metros/rollo',v('tr_om'),'m'), sp('Cms/secado',v('tr_oc'),'cm')),
+        metrics: mets,
+      });
+    }
+
+    // ── Toallas Intercaladas ──
+    if (v('ti_cp') > 0 || v('ti_op') > 0) {
+      const cPS = v('ti_cs')>0 ? p('ti_cp')/v('ti_cs') : 0;
+      const oPS = v('ti_os')>0 ? p('ti_op')/v('ti_os') : 0;
+      const cSec = cPS * (v('ti_cu')||1);
+      const oSec = oPS * (v('ti_ou')||1);
+      const mets = [];
+      if (cSec||oSec) mets.push({ label:'Costo por secado de manos', cur:cSec, our:oSec, unit:'/secado' });
+      if (cPS ||oPS ) mets.push({ label:'Costo por hoja',            cur:cPS,  our:oPS,  unit:'/hoja' });
+      sections.push({
+        name:'Toallas Intercaladas', icon:'🤲', priceUnit:'/caja',
+        curName:t('ti_cn')||'Producto actual', ourName:_getOurName('ti_on')||'Toallas Intercaladas',
+        curPrice:v('ti_cp'), ourPrice:v('ti_op'),
+        ourPhoto:_getOurPhoto('ti_on'),
+        curSpecs: spf(sp('Hojas/caja',v('ti_cs')), sp('Hojas/secado',v('ti_cu'))),
+        ourSpecs: spf(sp('Hojas/caja',v('ti_os')), sp('Hojas/secado',v('ti_ou'))),
+        metrics: mets,
+      });
+    }
+
+    // ── Bobinas Multiuso ──
+    if (v('bm_cp') > 0 || v('bm_op') > 0) {
+      const cB = v('bm_cr')||1, oB = v('bm_or')||1;
+      const cM = v('bm_cm')>0 ? p('bm_cp')/(cB*v('bm_cm')) : 0;
+      const oM = v('bm_om')>0 ? p('bm_op')/(oB*v('bm_om')) : 0;
+      const cH = v('bm_cl'), oH = v('bm_ol');
+      sections.push({
+        name:'Bobinas Multiuso', icon:'📦', priceUnit:'/paquete',
+        curName:t('bm_cn')||'Producto actual', ourName:_getOurName('bm_on')||'Bobinas Multiuso',
+        curPrice:v('bm_cp'), ourPrice:v('bm_op'),
+        ourPhoto:_getOurPhoto('bm_on'),
+        curSpecs: spf(sp('Bobinas/paquete',cB), sp('Metros/bobina',v('bm_cm'),'m'), cH?{label:'Hojas',val:cH+(cH>1?' hojas':' hoja')}:null),
+        ourSpecs: spf(sp('Bobinas/paquete',oB), sp('Metros/bobina',v('bm_om'),'m'), oH?{label:'Hojas',val:oH+(oH>1?' hojas':' hoja')}:null),
+        metrics: cM||oM ? [{ label:'Costo por metro',cur:cM,our:oM,unit:'/m' }] : [],
+      });
+    }
+
+    // ── Servilletas ──
+    if (v('sn_cp') > 0 || v('sn_op') > 0) {
+      const cPU  = v('sn_cu')>0 ? p('sn_cp')/v('sn_cu') : 0;
+      const oPU  = v('sn_ou')>0 ? p('sn_op')/v('sn_ou') : 0;
+      const cPCM = (v('sn_cs')>0&&cPU>0) ? cPU/(v('sn_cs')*v('sn_cs')) : 0;
+      const oPCM = (v('sn_os')>0&&oPU>0) ? oPU/(v('sn_os')*v('sn_os')) : 0;
+      const mets = [];
+      if (cPU ||oPU ) mets.push({ label:'Costo por servilleta', cur:cPU,  our:oPU,  unit:'/unidad' });
+      if (cPCM||oPCM) mets.push({ label:'Costo por cm²',        cur:cPCM, our:oPCM, unit:'/cm²' });
+      sections.push({
+        name:'Servilletas', icon:'🍽️', priceUnit:'/paquete',
+        curName:t('sn_cn')||'Producto actual', ourName:_getOurName('sn_on')||'Servilletas',
+        curPrice:v('sn_cp'), ourPrice:v('sn_op'),
+        ourPhoto:_getOurPhoto('sn_on'),
+        curSpecs: spf(sp('Unidades/paquete',v('sn_cu')), sp('Tamaño',v('sn_cs'),'cm')),
+        ourSpecs: spf(sp('Unidades/paquete',v('sn_ou')), sp('Tamaño',v('sn_os'),'cm')),
+        metrics: mets,
+      });
+    }
+
+    // ── Paños Multiuso ──
+    if (v('pm_cp') > 0 || v('pm_op') > 0) {
+      const cUU = v('pm_uu')||1, oUU = v('pm_ou2')||1;
+      const cPU = v('pm_cu')>0 ? p('pm_cp')/v('pm_cu') : 0;
+      const oPU = v('pm_ou')>0 ? p('pm_op')/v('pm_ou') : 0;
+      const mets = [];
+      if (cPU||oPU) {
+        mets.push({ label:'Costo por uso',  cur:cPU/cUU, our:oPU/oUU, unit:'/uso' });
+        mets.push({ label:'Costo por paño', cur:cPU,     our:oPU,     unit:'/paño' });
+      }
+      sections.push({
+        name:'Paños Multiuso', icon:'🧼', priceUnit:'/paquete',
+        curName:t('pm_cn')||'Producto actual', ourName:_getOurName('pm_on')||'Paños Multiuso',
+        curPrice:v('pm_cp'), ourPrice:v('pm_op'),
+        ourPhoto:_getOurPhoto('pm_on'),
+        curSpecs: spf(sp('Unidades/paquete',v('pm_cu')), sp('Usos/paño',cUU)),
+        ourSpecs: spf(sp('Unidades/paquete',v('pm_ou')), sp('Usos/paño',oUU)),
+        metrics: mets,
+      });
+    }
+
+    return sections;
+  }
+
+  function generarPropuesta() {
+    const sections = _getSections();
+    if (!sections.length) {
+      showToast('Completá al menos una sección con precios para generar la propuesta.', 'error');
+      return;
+    }
+
+    const cliente  = document.getElementById('clientName')?.value  || '';
+    const fechaRaw = document.getElementById('fechaVisita')?.value || '';
+    const fecha    = fechaRaw
+      ? new Date(fechaRaw + 'T00:00:00').toLocaleDateString('es-AR', { day:'2-digit', month:'long', year:'numeric' })
+      : new Date().toLocaleDateString('es-AR', { day:'2-digit', month:'long', year:'numeric' });
+    const condSel  = document.getElementById('condicionFiscal');
+    const condText = condSel ? condSel.options[condSel.selectedIndex].text : '';
+    const esRI     = condSel?.value === 'ri';
+    const logoUrl  = document.getElementById('logoImg')?.src || '';
+    const vend     = selectedVendor;
+
+    // Helper: renderiza lista de specs como mini-tabla
+    const specsHtml = (specs) => specs.length
+      ? `<div class="pcol-specs">${specs.map(s=>`<div class="spec-row"><span class="spec-key">${s.label}</span><span class="spec-val">${s.val}</span></div>`).join('')}</div>`
+      : '';
+
+    // Construir HTML de cada sección
+    const secHtml = sections.map(sec => {
+      // Cada métrica tiene su propia escala (máx = máx entre cur y our de ESA métrica)
+      const barRows = sec.metrics.map(m => {
+        const localMax = Math.max(m.cur||0, m.our||0, 0.0001);
+        const cPct = Math.round(((m.cur||0) / localMax) * 100);
+        const oPct = Math.round(((m.our||0) / localMax) * 100);
+        const diff = (m.cur > 0 && m.our > 0)
+          ? Math.abs(Math.round((m.cur - m.our) / m.cur * 100)) : 0;
+        const ourBetter = m.our < m.cur;
+        const badge = diff > 0
+          ? `<span class="pbadge ${ourBetter?'pbadge-win':'pbadge-lose'}">${ourBetter?'▼':'▲'} ${diff}%\u00a0${ourBetter?'más económico':'más caro'}</span>`
+          : '';
+        return `
+          <div class="pbar-section">
+            <div class="pbar-label">${m.label}</div>
+            <div class="pbar-group">
+              <div class="pbar-row">
+                <span class="pbar-name cur-color">${sec.curName}</span>
+                <div class="pbar-track"><div class="pbar cur-bar" style="width:${cPct}%"></div></div>
+                <span class="pbar-val">${_fmtCosto(m.cur, m.unit)}</span>
+              </div>
+              <div class="pbar-row">
+                <span class="pbar-name our-color">Nuestra propuesta</span>
+                <div class="pbar-track"><div class="pbar our-bar" style="width:${oPct}%"></div></div>
+                <span class="pbar-val">${_fmtCosto(m.our, m.unit)}</span>
+              </div>
+            </div>
+            ${badge}
+          </div>`;
+      }).join('');
+
+      const photoHtml = sec.ourPhoto
+        ? `<img src="${sec.ourPhoto}" class="prod-photo" alt="${sec.ourName}" onerror="this.style.display='none'">`
+        : '';
+
+      return `
+        <div class="psec">
+          <div class="psec-title">${sec.icon} ${sec.name}</div>
+          <div class="psec-body">
+            <div class="pcols">
+              <div class="pcol cur-col">
+                <div class="pcol-label">PRODUCTO ACTUAL</div>
+                <div class="pcol-name">${sec.curName}</div>
+                <div class="pcol-price">${_fmtMoney(sec.curPrice)}<span class="pcol-unit">${sec.priceUnit}</span></div>
+                ${specsHtml(sec.curSpecs||[])}
+              </div>
+              <div class="vs-sep">VS</div>
+              <div class="pcol our-col">
+                <div class="pcol-label">NUESTRO PRODUCTO</div>
+                ${photoHtml}
+                <div class="pcol-name">${sec.ourName}</div>
+                <div class="pcol-price">${_fmtMoney(sec.ourPrice)}<span class="pcol-unit">${sec.priceUnit}</span></div>
+                ${specsHtml(sec.ourSpecs||[])}
+              </div>
+            </div>
+            ${barRows ? `<div class="pbar-area">${barRows}</div>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+
+    // Vendor card
+    let vendorHtml = '';
+    if (vend) {
+      const av = vend.foto
+        ? `<img src="${vend.foto}" class="vcard-avatar" onerror="this.style.display='none'">`
+        : `<div class="vcard-avatar-placeholder">${vend.nombre.charAt(0).toUpperCase()}</div>`;
+      let contacts = '';
+      if (vend.telefono) contacts += `<div class="vcard-contact"><a href="tel:${vend.telefono}" style="color:inherit;text-decoration:none">📞 ${vend.telefono}</a></div>`;
+      if (vend.email)    contacts += `<div class="vcard-contact"><a href="mailto:${vend.email}" style="color:inherit;text-decoration:none">✉️ ${vend.email}</a></div>`;
+      if (vend.web) {
+        const wu = /^https?:\/\//i.test(vend.web) ? vend.web : 'https://' + vend.web;
+        contacts += `<div class="vcard-contact"><a href="${wu}" target="_blank" style="color:#1845a8;text-decoration:none">🌐 ${vend.web}</a></div>`;
+      }
+      if (vend.instagram) {
+        const iu = 'https://instagram.com/' + vend.instagram.replace(/^@/, '');
+        contacts += `<div class="vcard-contact"><a href="${iu}" target="_blank" style="color:#1845a8;text-decoration:none">📷 ${vend.instagram}</a></div>`;
+      }
+      vendorHtml = `
+        <div class="vcard">
+          <div class="vcard-left">
+            ${av}
+            <div class="vcard-info">
+              <div class="vcard-name">${vend.nombre}</div>
+              <div class="vcard-role">Asesor Comercial — Melcity</div>
+            </div>
+          </div>
+          <div class="vcard-contacts">${contacts}</div>
+        </div>`;
+    }
+
+    const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Costo en Uso — Melcity</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:#fff;color:#111827;font-size:13px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .page{max-width:820px;margin:0 auto;padding:28px 32px}
+  /* Header */
+  .ph{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #1845a8;padding-bottom:16px;margin-bottom:20px}
+  .ph-logo{height:44px;width:auto;object-fit:contain}
+  .ph-logo-fallback{width:44px;height:44px;background:linear-gradient(135deg,#1845a8,#00b4a0);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:18px}
+  .ph-title{font-size:22px;font-weight:900;color:#1845a8;line-height:1}
+  .ph-sub{font-size:11px;color:#6b7280;margin-top:4px}
+  .ph-right{text-align:right}
+  .ph-date{font-size:12px;font-weight:600;color:#374151}
+  .ph-cliente{font-size:14px;font-weight:700;color:#111827;margin-top:2px}
+  .ph-cond{font-size:11px;color:#6b7280;margin-top:2px}
+  .ph-iva-note{font-size:10px;border-radius:4px;padding:2px 6px;margin-top:4px;font-weight:600}
+  .ph-iva-ri{color:#92400e;background:#fef3c7}
+  .ph-iva-ok{color:#166534;background:#dcfce7}
+  /* Sections */
+  .psec{margin-bottom:22px;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;break-inside:avoid;page-break-inside:avoid}
+  .psec-title{background:linear-gradient(135deg,#1845a8,#1e5fa8);color:white;padding:9px 16px;font-size:13px;font-weight:800;letter-spacing:0.04em;text-transform:uppercase}
+  .psec-body{padding:16px}
+  /* Columns */
+  .pcols{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+  .pcol{flex:1;padding:12px;border-radius:10px}
+  .cur-col{background:#fffbeb;border:1px solid #fde68a}
+  .our-col{background:#f0fdf9;border:1px solid #99f6e4;text-align:left}
+  .vs-sep{font-size:14px;font-weight:900;color:#9ca3af;align-self:center;padding:0 6px;flex-shrink:0}
+  .pcol-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#9ca3af;margin-bottom:4px}
+  .pcol-name{font-size:clamp(10px,2vw,13px);font-weight:700;color:#111827;margin-bottom:6px;line-height:1.35;overflow-wrap:break-word;word-break:break-word}
+  .pcol-price{font-size:17px;font-weight:900;color:#1845a8}
+  .pcol-unit{font-size:11px;font-weight:600;color:#6b7280;margin-left:2px}
+  .pcol-specs{margin-top:8px;border-top:1px solid rgba(0,0,0,0.08);padding-top:7px;display:flex;flex-direction:column;gap:3px}
+  .spec-row{display:flex;justify-content:space-between;align-items:center;font-size:11px}
+  .spec-key{color:#6b7280;font-weight:600}
+  .spec-val{color:#111827;font-weight:700;text-align:right;margin-left:6px}
+  .prod-photo{width:100%;max-height:80px;object-fit:contain;border-radius:6px;margin-bottom:6px}
+  /* Bars */
+  .pbar-area{background:#f9fafb;border-radius:10px;padding:12px 14px}
+  .pbar-section{margin-bottom:12px}
+  .pbar-section:last-child{margin-bottom:0}
+  .pbar-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6b7280;margin-bottom:8px}
+  .pbar-group{display:flex;flex-direction:column;gap:6px}
+  .pbar-row{display:flex;align-items:center;gap:8px}
+  .pbar-name{width:160px;font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0}
+  .cur-color{color:#d97706}
+  .our-color{color:#0d9488}
+  .pbar-track{flex:1;background:#e5e7eb;border-radius:20px;height:16px;overflow:hidden}
+  .pbar{height:100%;border-radius:20px;min-width:4px;transition:width 0s}
+  .cur-bar{background:linear-gradient(90deg,#fbbf24,#f59e0b)}
+  .our-bar{background:linear-gradient(90deg,#2dd4bf,#0d9488)}
+  .pbar-val{width:130px;font-size:11px;font-weight:700;color:#374151;text-align:right;flex-shrink:0;white-space:nowrap}
+  .pbadge{display:inline-flex;align-items:center;gap:4px;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;margin-top:8px}
+  .pbadge-win{background:#dcfce7;color:#166534}
+  .pbadge-lose{background:#fef3c7;color:#92400e}
+  /* Vendor card */
+  .vcard{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,#eff6ff,#f0fdfa);border:1px solid #c7d2fe;border-radius:12px;padding:14px 18px;margin-top:22px;break-inside:avoid;page-break-inside:avoid}
+  .vcard-left{display:flex;align-items:center;gap:14px}
+  .vcard-avatar{width:54px;height:54px;border-radius:50%;object-fit:cover;border:2px solid #c7d2fe}
+  .vcard-avatar-placeholder{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#1845a8,#00b4a0);color:white;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .vcard-name{font-size:15px;font-weight:800;color:#1e40af}
+  .vcard-role{font-size:11px;color:#6b7280;margin-top:2px}
+  .vcard-contacts{display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+  .vcard-contact{font-size:12px;font-weight:600;color:#374151}
+  /* Footer */
+  .pfooter{text-align:center;font-size:10px;color:#9ca3af;margin-top:24px;padding-top:12px;border-top:1px solid #e5e7eb}
+  @media print{
+    body{padding:0}
+    .page{padding:16px 20px}
+    .no-print{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="ph">
+    <div style="display:flex;align-items:center;gap:14px">
+      ${logoUrl ? `<img src="${logoUrl}" class="ph-logo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph-logo-fallback" style="display:none">M</div>` : '<div class="ph-logo-fallback">M</div>'}
+      <div>
+        <div class="ph-title">Calculadora de Costo en Uso</div>
+        <div class="ph-sub">Distribuidora de Productos de Limpieza e Higiene Profesional</div>
+      </div>
+    </div>
+    <div class="ph-right">
+      <div class="ph-date">${fecha}</div>
+      ${cliente ? `<div class="ph-cliente">Para: ${cliente}</div>` : ''}
+      ${condText ? `<div class="ph-cond">${condText}</div>` : ''}
+      ${esRI
+        ? `<div class="ph-iva-note ph-iva-ri">* Precios netos, no incluyen IVA (21%)</div>`
+        : `<div class="ph-iva-note ph-iva-ok">* Precios finales, IVA incluido</div>`}
+    </div>
+  </div>
+
+  ${secHtml}
+
+  ${vendorHtml}
+
+  <div class="pfooter">Propuesta generada por la Calculadora de Costo en Uso — Melcity · ${new Date().getFullYear()}</div>
+</div>
+<script>window.onload=()=>{window.print()}<\/script>
+</body>
+</html>`;
+
+    const win = window.open('', '_blank', 'width=920,height=750,scrollbars=yes');
+    if (!win) { showToast('Activá las ventanas emergentes para generar la propuesta.', 'error'); return; }
+    win.document.write(html);
+    win.document.close();
+  }
+
+  // Descarga el catálogo desde CATALOGO_URL (GitHub raw u otro servidor)
+  async function autoLoadCatalog() {
+    if (!CATALOGO_URL) return;
+    if (typeof XLSX === 'undefined') return;
+    showToast('🔄 Descargando catálogo…', 'ok');
+    try {
+      const resp = await fetch(CATALOGO_URL, { cache: 'no-cache' });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const buffer = await resp.arrayBuffer();
+      const wb   = XLSX.read(new Uint8Array(buffer), { type: 'array' });
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '', range: 1 });
+      if (!rows.length) throw new Error('Sin datos');
+      const { products, total, skipped } = _parseXlsxRows(rows);
+      if (!Object.keys(products).length) throw new Error('Sin productos reconocidos');
+      _applyCatalog(products, total, skipped, 'GitHub');
+    } catch(err) {
+      console.warn('Auto-carga catálogo:', err.message);
+      // Si falla la descarga, intentar restaurar desde localStorage
+      try {
+        const saved = localStorage.getItem(_STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Object.keys(parsed).length > 0) {
+            loadedProducts = parsed;
+            injectProductSelectors();
+            recalcAll();
+            updateGearStatus();
+            const total = Object.values(loadedProducts).reduce((s,a)=>s+a.length,0);
+            showToast(`⚠ Sin conexión — usando catálogo guardado (${total} productos).`, 'ok');
+            return;
+          }
+        }
+      } catch(e) {}
+      showToast('⚠ No se pudo descargar el catálogo. Verificá la conexión o cargá el Excel manualmente.', 'error');
+    }
+  }
+
+  // ─── Catálogo cargado desde Excel ────────────────────
+  let loadedProducts = {};   // { tipo: [ {col: val, ...}, ... ] }
+
+  // ─── URLs remotas ─────────────────────────────────────────────────────────────
+  const CATALOGO_URL   = 'https://raw.githubusercontent.com/patriciomelcity/calculadora-melcity/main/catalogo-melcity.xlsx';
+  const VENDEDORES_URL = 'https://raw.githubusercontent.com/patriciomelcity/calculadora-melcity/main/vendedores-melcity.xlsx';
+
+  // Agrega espacio al tope de la columna "cur" para que sus campos
+  // queden alineados con los primeros campos de la columna "our"
+  // (que puede tener selector de producto + foto encima).
+  function _alignCurColumn(ourCol) {
+    const grid = ourCol.closest('.comparison');
+    if (!grid) return;
+    const curCol = grid.querySelector('.product-col.cur');
+    if (!curCol) return;
+    curCol.querySelector('.cur-spacer')?.remove();
+    requestAnimationFrame(() => {
+      const ourFields = [...ourCol.querySelectorAll('.field')];
+      const curFields = [...curCol.querySelectorAll('.field')];
+      // Usar el mismo índice absoluto en ambas columnas para alinear campos equivalentes.
+      // En 'our', el campo Nombre/Marca (índice 0) está oculto; el primer visible es
+      // Precio (índice 1). Alineamos curCol[1] (Precio) con ourCol[1] (Precio).
+      const refIdx = ourFields.findIndex(el => el.offsetHeight > 0);
+      if (refIdx < 0) return;
+      const ourRef = ourFields[refIdx];
+      const curRef = curFields[refIdx];
+      if (!ourRef || !curRef) return;
+      const ourTop = ourRef.getBoundingClientRect().top;
+      const curTop = curRef.getBoundingClientRect().top;
+      const diff = Math.round(ourTop - curTop);
+      if (diff > 2) {
+        const sp = document.createElement('div');
+        sp.className = 'cur-spacer';
+        sp.style.height = diff + 'px';
+        const h4 = curCol.querySelector('h4');
+        if (h4) h4.after(sp); else curCol.prepend(sp);
+      }
+    });
+  }
+
+  function injectProductSelectors() {
+    Object.entries(PHOTO_ANCHOR).forEach(([tipo, anchorId]) => {
+      const products = loadedProducts[tipo];
+      const anchor   = document.getElementById(anchorId);
+      if (!anchor) return;
+      const ourCol = anchor.closest('.product-col.our');
+      if (!ourCol) return;
+
+      // Limpiar selector anterior si existe
+      const old = ourCol.querySelector('.ps-wrap');
+      if (old) old.remove();
+      if (!products || products.length === 0) return;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'ps-wrap';
+
+      const lbl = document.createElement('div');
+      lbl.className = 'ps-label';
+      lbl.textContent = 'Elegir producto';
+      wrap.appendChild(lbl);
+
+      const sel = document.createElement('select');
+      sel.className = 'ps-select';
+
+      const def = document.createElement('option');
+      def.value = '';
+      def.textContent = `— ${products.length} opción${products.length > 1 ? 'es' : ''} disponible${products.length > 1 ? 's' : ''} —`;
+      sel.appendChild(def);
+
+      products.forEach((prod, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = prod['Nombre / Marca'] || `Producto ${i + 1}`;
+        sel.appendChild(opt);
+      });
+
+      sel.onchange = () => {
+        if (sel.value === '') return;
+        selectProduct(tipo, parseInt(sel.value));
+      };
+
+      wrap.appendChild(sel);
+
+      const h4 = ourCol.querySelector('h4');
+      if (h4) h4.after(wrap); else ourCol.prepend(wrap);
+
+      // Ocultar campo "Nombre / Marca" — el selector lo reemplaza
+      const nameField = document.getElementById(anchorId)?.closest('.field');
+      if (nameField) nameField.style.display = 'none';
+
+      // Nivelar columna "actual" con los campos de "nuestro producto"
+      _alignCurColumn(ourCol);
+    });
+  }
+
+  function selectProduct(tipo, idx) {
+    const product = loadedProducts[tipo]?.[idx];
+    if (!product) return;
+
+    const map = TYPE_MAP[tipo];
+    if (!map) return;
+
+    Object.entries(map).forEach(([col, id]) => {
+      if (col === 'Nombre / Marca') return;
+      const val = product[col];
+      if (val === undefined || val === null || val === '') return;
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (el.tagName === 'SELECT') {
+        el.value = String(typeof val === 'number' ? Math.round(val) : val).trim();
+      } else if (_modoRI && PRICE_FIELDS.includes(id) && typeof val === 'number' && val > 0) {
+        // En modo RI: el Excel tiene precios brutos → mostrar neto en el campo
+        el.dataset.bruto = val;
+        el.value = +(val / 1.21).toFixed(2);
+      } else {
+        el.value = val;
+      }
+    });
+
+    if (product['_foto']) setProductPhoto(tipo, product['_foto']);
+    else {
+      // Limpiar foto si el producto no tiene
+      const anchorId = PHOTO_ANCHOR[tipo];
+      const wrap = anchorId ? document.getElementById(anchorId + '_pw') : null;
+      if (wrap) wrap.style.display = 'none';
+    }
+
+    recalcAll();
+  }
+
+  // ─── Persistencia del catálogo ───────────────────────
+  const _STORAGE_KEY = 'melcity_catalogo_v1';
+
+  function saveCatalogo() {
+    try {
+      localStorage.setItem(_STORAGE_KEY, JSON.stringify(loadedProducts));
+    } catch(e) { /* storage lleno o deshabilitado */ }
+  }
+
+  function clearCatalogo() {
+    loadedProducts = {};
+    localStorage.removeItem(_STORAGE_KEY);
+    // Quitar selectores y campos nombre inyectados
+    document.querySelectorAll('.ps-wrap').forEach(el => {
+      // Restaurar el campo nombre que se ocultó
+      const ourCol = el.closest('.product-col.our');
+      if (ourCol) {
+        const nameField = ourCol.querySelector('.field');
+        if (nameField) nameField.style.display = '';
+      }
+      el.remove();
+    });
+    document.querySelectorAll('.product-photo-wrap').forEach(el => el.remove());
+    document.querySelectorAll('.cur-spacer').forEach(el => el.remove());
+    updateGearStatus();
+    showToast('🗑 Catálogo borrado. Podés cargar un Excel nuevo.', 'ok');
+  }
+
+  function updateGearStatus() {
+    const statusEl = document.getElementById('gear-status');
+    if (!statusEl) return;
+    const total = Object.values(loadedProducts).reduce((s, arr) => s + arr.length, 0);
+    if (total > 0) {
+      const tipos = Object.keys(loadedProducts).length;
+      statusEl.innerHTML = `<span class="gear-status-ok">📦 ${total} producto${total>1?'s':''}</span>`;
+    } else {
+      statusEl.innerHTML = `<span class="gear-status-empty">Cargando catálogo…</span>`;
+    }
+  }
+
+  // Al abrir la página
+  window.addEventListener('DOMContentLoaded', () => {
+    // Resolver logos desde GitHub si hay CATALOGO_URL
+    if (CATALOGO_URL) {
+      const logoImg = document.getElementById('logoImg');
+      if (logoImg) {
+        const logoUrl = _resolvePhotoUrl('logo_transparent.png');
+        if (logoUrl && logoUrl !== 'logo_transparent.png') logoImg.src = logoUrl;
+      }
+      const eliteImg = document.getElementById('eliteLogoImg');
+      if (eliteImg) {
+        const eliteUrl = _resolvePhotoUrl('logo_elite.png');
+        if (eliteUrl && eliteUrl !== 'logo_elite.png') eliteImg.src = eliteUrl;
+      }
+    }
+
+    // Cargar vendedores desde GitHub
+    if (VENDEDORES_URL) autoLoadVendors();
+
+    if (CATALOGO_URL) {
+      // Modo remoto: descargar catálogo desde GitHub (o caer en localStorage si falla)
+      autoLoadCatalog();
+    } else {
+      // Modo local: restaurar catálogo desde localStorage
+      try {
+        const saved = localStorage.getItem(_STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Object.keys(parsed).length > 0) {
+            loadedProducts = parsed;
+            injectProductSelectors();
+            recalcAll();
+            updateGearStatus();
+            const total = Object.values(loadedProducts).reduce((s, a) => s + a.length, 0);
+            showToast(`📦 Catálogo restaurado — ${total} productos listos.`, 'ok');
+          }
+        }
+      } catch(e) { /* JSON inválido */ }
+    }
+  });
+
+  function showToast(msg, type = 'ok') {
+    let toast = document.getElementById('_toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = '_toast';
+      toast.className = 'toast';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.className = `toast ${type} show`;
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => toast.classList.remove('show'), 7000);
+  }
+</script>
+</body>
+</html>
